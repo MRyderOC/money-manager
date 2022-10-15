@@ -1,0 +1,4 @@
+mymoney
+numpy
+pandas>=1.4.4
+# setuptools>=61.0
