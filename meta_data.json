@@ -1,0 +1,288 @@
+{
+    "amex": {
+        "credit": {
+            "columns": [
+                "Date",
+                "Description",
+                "Amount",
+                "Extended Details",
+                "Appears On Your Statement As",
+                "Address",
+                "City/State",
+                "Zip Code",
+                "Country",
+                "Reference",
+                "Category"
+            ],
+            "read_args": {
+                "header": 0,
+                "parse_dates": [
+                    "Date"
+                ],
+                "names": null
+            }
+        }
+    },
+    "discover": {
+        "credit": {
+            "columns": [
+                "Trans. Date",
+                "Post Date",
+                "Description",
+                "Amount",
+                "Category"
+            ],
+            "read_args": {
+                "header": 0,
+                "parse_dates": [
+                    "Trans. Date",
+                    "Post Date"
+                ],
+                "names": null
+            }
+        }
+    },
+    "capitalone": {
+        "credit": {
+            "columns": [
+                "Transaction Date",
+                "Posted Date",
+                "Card No.",
+                "Description",
+                "Category",
+                "Debit",
+                "Credit"
+            ],
+            "read_args": {
+                "header": 0,
+                "parse_dates": [
+                    "Transaction Date",
+                    "Posted Date"
+                ],
+                "names": null
+            }
+        },
+        "debit": {
+            "columns": [
+                "Account Number",
+                "Transaction Date",
+                "Transaction Amount",
+                "Transaction Type",
+                "Transaction Description",
+                "Balance"
+            ],
+            "read_args": {
+                "header": 0,
+                "parse_dates": [
+                    "Transaction Date"
+                ],
+                "names": null
+            }
+        }
+    },
+    "citi": {
+        "credit": {
+            "columns": [
+                "Status",
+                "Date",
+                "Description",
+                "Debit",
+                "Credit"
+            ],
+            "read_args": {
+                "header": 0,
+                "parse_dates": [
+                    "Date"
+                ],
+                "names": null
+            }
+        }
+    },
+
+
+
+
+    "cashapp": {},
+    "chase": {},
+    "wellsfargo": {
+        "debit": {
+            "columns": [],
+            "read_args": {
+                "header": 0,
+                "parse_dates": [
+                    "Date"
+                ],
+                "names": [
+                    "Date",
+                    "Amount",
+                    "x",
+                    "y",
+                    "Title"
+                ]
+            }
+        }
+    },
+
+    "sofi": {},
+
+
+
+    "paypal": {
+        "3rdparty": {
+            "columns": [
+                "Date",
+                "Time",
+                "TimeZone",
+                "Name",
+                "Type",
+                "Status",
+                "Currency",
+                "Amount",
+                "Receipt ID",
+                "Balance"
+            ],
+            "read_args": {
+                "header": 0,
+                "parse_dates": [
+                    "Date"
+                ],
+                "names": null
+            }
+        }
+    },
+    "venmo": {
+        "3rdparty": {
+            "columns": [
+                "Unnamed: 0",
+                "ID",
+                "Datetime",
+                "Type",
+                "Status",
+                "Note",
+                "From",
+                "To",
+                "Amount (total)",
+                "Amount (tip)",
+                "Amount (fee)",
+                "Funding Source",
+                "Destination",
+                "Beginning Balance",
+                "Ending Balance",
+                "Statement Period Venmo Fees",
+                "Terminal Location",
+                "Year to Date Venmo Fees",
+                "Disclaimer"
+            ],
+            "read_args": {
+                "header": 2,
+                "parse_dates": [
+                    "Datetime"
+                ],
+                "names": null
+            }
+        }
+    },
+
+
+
+    
+    "coinbase": {
+        "exchange": {
+            "columns": [
+                "Timestamp",
+                "Transaction Type",
+                "Asset",
+                "Quantity Transacted",
+                "Spot Price Currency",
+                "Spot Price at Transaction",
+                "Subtotal",
+                "Total (inclusive of fees)",
+                "Fees",
+                "Notes"
+            ],
+            "read_args": {
+                "header": 3,
+                "parse_dates": [
+                    "Timestamp"
+                ],
+                "names": null
+            }
+        }
+    },
+    "crypto_com": {
+        "exchange": {
+            "columns": [
+                "Timestamp (UTC)",
+                "Transaction Description",
+                "Currency",
+                "Amount",
+                "To Currency",
+                "To Amount",
+                "Native Currency",
+                "Native Amount",
+                "Native Amount (in USD)",
+                "Transaction Kind"
+            ],
+            "read_args": {
+                "header": 0,
+                "parse_dates": [
+                    "Timestamp (UTC)"
+                ],
+                "names": null
+            }
+        }
+    },
+    "td": {
+        "exchange": {
+            "columns": [
+                "DATE",
+                "TRANSACTION ID",
+                "DESCRIPTION",
+                "QUANTITY",
+                "SYMBOL",
+                "PRICE",
+                "COMMISSION",
+                "AMOUNT",
+                "REG FEE",
+                "SHORT-TERM RDM FEE",
+                "FUND REDEMPTION FEE",
+                " DEFERRED SALES CHARGE"
+            ],
+            "read_args": {
+                "header": 0,
+                "parse_dates": [
+                    "DATE"
+                ],
+                "names": null
+            }
+        }
+    },
+    "uphold": {
+        "exchange": {
+            "columns": [
+                "Date",
+                "Destination",
+                "Destination Amount",
+                "Destination Currency",
+                "Fee Amount",
+                "Fee Currency",
+                "Id",
+                "Origin",
+                "Origin Amount",
+                "Origin Currency",
+                "Status",
+                "Type"
+            ],
+            "read_args": {
+                "header": 0,
+                "parse_dates": [
+                    "Date"
+                ],
+                "names": null
+            }
+        }
+    },
+
+
+    "robinhood": {}
+}
