@@ -131,27 +131,3 @@ class Institution():
         return {
             "trade": clean_df
         }
-
-
-
-
-
-
-
-    # def _column_values_checker(self):
-    #     """docs here!"""
-    #     pass
-
-
-
-
-
-
-# def nulls_based_on_columns(df: pd.DataFrame):
-#     for col in df.columns:
-#         print(f'{col}:\t{df[col].isna().sum()}')
-
-
-# def uniques_in_columns(df: pd.DataFrame):
-#     for col in df.columns:
-#         print(f'{col}\n\t{df[col].unique()}')

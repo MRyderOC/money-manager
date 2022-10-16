@@ -203,18 +203,3 @@ class ExecClass():
             dfs_dict=all_dataframes, sanity_check=sanity_check
         )
 
-
-
-
-
-
-
-
-if __name__ == "__main__":
-    # path_builder = lambda inst: "/content/drive/MyDrive/csv_files/{}.csv".format(inst)
-    path = "/Users/milad/Desktop/Dev/github_repos/finances/csv_files/outs/expenses/2022-03-10/raw_data/credits/capitalone 2091.csv"
-    obj_main = ExecClass()
-    # x = obj_main.data_reader(path)
-    capone = obj_main.path_to_dataframe_dict(path, "capone")
-    print(capone)
-    # print(x)
