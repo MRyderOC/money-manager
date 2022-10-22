@@ -98,12 +98,27 @@
             }
         }
     },
-
-
-
-
-    "cashapp": {},
-    "chase": {},
+    "chase": {
+        "credit": {
+            "columns": [
+                "Transaction Date",
+                "Post Date",
+                "Description",
+                "Category",
+                "Type",
+                "Amount",
+                "Memo"
+            ],
+            "read_args": {
+                "header": 0,
+                "parse_dates": [
+                    "Transaction Date",
+                    "Post Date"
+                ],
+                "names": null
+            }
+        }
+    },
     "wellsfargo": {
         "debit": {
             "columns": [],
