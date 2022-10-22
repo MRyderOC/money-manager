@@ -3,7 +3,7 @@ import logging
 import numpy as np
 import pandas as pd
 
-from mymoney.core import institution
+from mymoney.institutions import institution_base
 
 
 logging.basicConfig(
@@ -14,7 +14,7 @@ logging.basicConfig(
 )
 
 
-class Citi(institution.Institution):
+class Citi(institution_base.Institution):
     """docs here!"""
 
     _this_institution_name = "citi"

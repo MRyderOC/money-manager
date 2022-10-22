@@ -4,7 +4,7 @@ import logging
 import numpy as np
 import pandas as pd
 
-from mymoney.core import institution
+from mymoney.institutions import institution_base
 
 
 logging.basicConfig(
@@ -15,7 +15,7 @@ logging.basicConfig(
 )
 
 
-class PayPal(institution.Institution):
+class PayPal(institution_base.Institution):
     """docs here!"""
 
     _this_institution_name = "paypal"
