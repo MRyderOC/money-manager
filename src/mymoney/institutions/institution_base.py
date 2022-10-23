@@ -18,7 +18,6 @@ logging.basicConfig(
 class Institution():
     """docs here!"""
 
-    _meta_data_path = "meta_data.json"
     _this_institution_name = "base"
 
     _USDs = ["USD", "USDC", "USDT"]
