@@ -138,10 +138,6 @@
         }
     },
 
-    "sofi": {},
-
-
-
     "paypal": {
         "3rdparty": {
             "columns": [
@@ -165,6 +161,9 @@
             }
         }
     },
+
+
+
     "venmo": {
         "3rdparty": {
             "columns": [
@@ -197,6 +196,7 @@
             }
         }
     },
+    "cashapp": {},
 
 
 
@@ -299,5 +299,6 @@
     },
 
 
-    "robinhood": {}
+    "robinhood": {},
+    "sofi": {}
 }

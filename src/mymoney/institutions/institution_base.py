@@ -4,6 +4,7 @@ from typing import Dict, List
 
 import numpy as np
 import pandas as pd
+from importlib_resources import files
 
 
 logging.basicConfig(
@@ -39,8 +40,9 @@ class Institution():
 
 
     def __init__(self) -> None:
-        with open(self._meta_data_path) as f:
-            self._meta_data = json.load(f)
+        self._meta_data = json.loads(
+            files("mymoney").joinpath("meta_data.json").read_text()
+        )
         self._this_meta_data = self._meta_data.get(self._this_institution_name)
 
 
