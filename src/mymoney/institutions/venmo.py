@@ -61,5 +61,6 @@ class Venmo(institution_base.Institution):
         input_df["_new_MyCategory"] = pd.Series([np.nan] * len(input_df))
         input_df["_new_Institution"] = pd.Series(["Venmo"] * len(input_df))
         input_df["_new_IsTransfer"] = input_df["Type"].map(is_transfer_finder)
+        # TODO: input_df["_new_IsCompatible"] =
 
         return input_df.dropna(subset=["_new_Date"])
