@@ -57,13 +57,16 @@ class RawDataReader():
                     account_name = os.path.basename(path).split(".")[0]
                     logging.info(f"Completed: {name} - {account_name}")
                     return {
-                        "input_df": input_df,
                         "institution_name": institution,
                         "service_name": service,
                         "account_name": account_name,
+                        "input_df": input_df,
                     }
                 # except ParserError:
                 #     logging.warning(f"Parse Error: {name}")
                 except Exception as err:
                     # logging.warning(f"An error occurred for {name}: {err}")
                     continue
+
+        # Log a warning if data can not be read
+        logging.warning(f"Couldn't read the data for {path}")
