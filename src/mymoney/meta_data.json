@@ -211,8 +211,8 @@
                 "Spot Price Currency",
                 "Spot Price at Transaction",
                 "Subtotal",
-                "Total (inclusive of fees)",
-                "Fees",
+                "Total (inclusive of fees and/or spread)",
+                "Fees and/or Spread",
                 "Notes"
             ],
             "read_args": {
@@ -236,7 +236,8 @@
                 "Native Currency",
                 "Native Amount",
                 "Native Amount (in USD)",
-                "Transaction Kind"
+                "Transaction Kind",
+                "Transaction Hash"
             ],
             "read_args": {
                 "header": 0,
