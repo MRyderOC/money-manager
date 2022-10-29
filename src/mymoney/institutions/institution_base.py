@@ -6,6 +6,8 @@ import numpy as np
 import pandas as pd
 from importlib_resources import files
 
+from mymoney.core import output_transformer
+
 
 logging.basicConfig(
     level=logging.INFO,
@@ -43,6 +45,7 @@ class Institution():
             files("mymoney").joinpath("meta_data.json").read_text()
         )
         self._this_meta_data = self._meta_data.get(self._this_institution_name)
+        self._output_trnsfrmr = output_transformer.OutputTransformer()
 
 
     def service_executer(
@@ -97,38 +100,50 @@ class Institution():
         self, input_df: pd.DataFrame, account_name: str
     ) -> Dict[str, pd.DataFrame]:
         """docs here!"""
-        clean_df = self._debit_cleaning(input_df, account_name)
+        sanity_df = self._debit_cleaning(input_df, account_name)
+        out_df = self._output_trnsfrmr.output_df_creator(sanity_df)
         # Error/Type checking in here if needed
         return {
-            "expense": clean_df
+            "sanity_df": sanity_df,
+            "output_df": out_df,
+            "out_type": "balance"
         }
 
     def credit(
         self, input_df: pd.DataFrame, account_name: str
     ) -> Dict[str, pd.DataFrame]:
         """docs here!"""
-        clean_df = self._credit_cleaning(input_df, account_name)
+        sanity_df = self._credit_cleaning(input_df, account_name)
+        out_df = self._output_trnsfrmr.output_df_creator(sanity_df)
         # Error/Type checking in here if needed
         return {
-            "expense": clean_df
+            "sanity_df": sanity_df,
+            "output_df": out_df,
+            "out_type": "expense"
         }
 
     def third_party(
         self, input_df: pd.DataFrame, account_name: str
     ) -> Dict[str, pd.DataFrame]:
         """docs here!"""
-        clean_df = self._third_party_cleaning(input_df, account_name)
+        sanity_df = self._third_party_cleaning(input_df, account_name)
+        out_df = self._output_trnsfrmr.output_df_creator(sanity_df)
         # Error/Type checking in here if needed
         return {
-            "expense": clean_df
+            "sanity_df": sanity_df,
+            "output_df": out_df,
+            "out_type": "expense"
         }
 
     def exchange(
         self, input_df: pd.DataFrame, account_name: str
     ) -> Dict[str, pd.DataFrame]:
         """docs here!"""
-        clean_df = self._exchange_cleaning(input_df, account_name)
+        sanity_df = self._exchange_cleaning(input_df, account_name)
+        out_df = self._output_trnsfrmr.output_df_creator(sanity_df)
         # Error/Type checking in here if needed
         return {
-            "trade": clean_df
+            "sanity_df": sanity_df,
+            "output_df": out_df,
+            "out_type": "tarde"
         }
