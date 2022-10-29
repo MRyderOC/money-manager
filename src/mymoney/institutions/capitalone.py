@@ -75,8 +75,9 @@ class CapitalOne(institution_base.Institution):
         def is_transfer_finder(row):
             try:
                 regex_flag = re.search(
-                    r"VENMO|DISCOVER|AMEX|WELLS FARGO|PAYPAL|CAPITAL ONE ONLINE PMT|"
-                    r"CAPITAL ONE MOBILE PMT|CITI CARD|SOFI CREDIT|360 Checking",
+                    r"VENMO|DISCOVER|AMEX|WELLS FARGO|PAYPAL|CITI CARD|"
+                    r"CAPITAL ONE [\w\s]*PMT|SOFI [\w\s\.]* CARD PAYMT|"
+                    r"360 Checking",
                     str(row["_new_Description"])
                 )
             except Exception:
