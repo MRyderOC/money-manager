@@ -50,13 +50,8 @@ class ExecClass():
         for dirname, _, filenames in os.walk(folder_path):
             if dirname == folder_path:
                 for filename in filenames:
-                    try:
-                        name, ext = filename.split(".")
-                    except ValueError:
-                        raise OSError(
-                            f"{filename} doesn't have any extension."
-                        )
-                    if ext.casefold() != "csv":
+                    name, ext = os.path.splitext(filename)
+                    if ext.casefold() != ".csv":
                         continue
 
                     path = os.path.join(dirname, filename)
