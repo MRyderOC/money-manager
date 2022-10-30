@@ -54,19 +54,3 @@ class OutputTransformer():
         return the_institution_obj.service_executer(
             input_df, service_name, account_name
         )
-
-
-    def output_df_creator(self, df: pd.DataFrame) -> pd.DataFrame:
-        """docs here!"""
-        new_columns_name_map = {
-            col: col[5:]
-            for col in df.columns
-            if col.startswith("_new_")
-        }
-        old_columns = [
-            col
-            for col in df.columns
-            if not col.startswith("_new_")
-        ]
-
-        return df.drop(columns=old_columns).rename(columns=new_columns_name_map)

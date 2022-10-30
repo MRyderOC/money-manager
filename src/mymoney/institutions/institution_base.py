@@ -6,8 +6,6 @@ import numpy as np
 import pandas as pd
 from importlib_resources import files
 
-from mymoney.core import output_transformer
-
 
 logging.basicConfig(
     level=logging.INFO,
@@ -45,7 +43,22 @@ class Institution():
             files("mymoney").joinpath("meta_data.json").read_text()
         )
         self._this_meta_data = self._meta_data.get(self._this_institution_name)
-        self._output_trnsfrmr = output_transformer.OutputTransformer()
+
+
+    def _output_df_creator(self, df: pd.DataFrame) -> pd.DataFrame:
+        """docs here!"""
+        new_columns_name_map = {
+            col: col[5:]
+            for col in df.columns
+            if col.startswith("_new_")
+        }
+        old_columns = [
+            col
+            for col in df.columns
+            if not col.startswith("_new_")
+        ]
+
+        return df.drop(columns=old_columns).rename(columns=new_columns_name_map)
 
 
     def service_executer(
@@ -101,7 +114,7 @@ class Institution():
     ) -> Dict[str, Union[pd.DataFrame, str]]:
         """docs here!"""
         sanity_df = self._debit_cleaning(input_df, account_name)
-        out_df = self._output_trnsfrmr.output_df_creator(sanity_df)
+        out_df = self._output_df_creator(sanity_df)
         # Error/Type checking in here if needed
         return {
             "sanity_df": sanity_df,
@@ -114,7 +127,7 @@ class Institution():
     ) -> Dict[str, Union[pd.DataFrame, str]]:
         """docs here!"""
         sanity_df = self._credit_cleaning(input_df, account_name)
-        out_df = self._output_trnsfrmr.output_df_creator(sanity_df)
+        out_df = self._output_df_creator(sanity_df)
         # Error/Type checking in here if needed
         return {
             "sanity_df": sanity_df,
@@ -127,7 +140,7 @@ class Institution():
     ) -> Dict[str, Union[pd.DataFrame, str]]:
         """docs here!"""
         sanity_df = self._third_party_cleaning(input_df, account_name)
-        out_df = self._output_trnsfrmr.output_df_creator(sanity_df)
+        out_df = self._output_df_creator(sanity_df)
         # Error/Type checking in here if needed
         return {
             "sanity_df": sanity_df,
@@ -140,7 +153,7 @@ class Institution():
     ) -> Dict[str, Union[pd.DataFrame, str]]:
         """docs here!"""
         sanity_df = self._exchange_cleaning(input_df, account_name)
-        out_df = self._output_trnsfrmr.output_df_creator(sanity_df)
+        out_df = self._output_df_creator(sanity_df)
         # Error/Type checking in here if needed
         return {
             "sanity_df": sanity_df,
