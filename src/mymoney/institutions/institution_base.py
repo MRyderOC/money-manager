@@ -1,6 +1,6 @@
 import json
 import logging
-from typing import Dict, List
+from typing import Dict, Union
 
 import numpy as np
 import pandas as pd
@@ -53,7 +53,7 @@ class Institution():
         input_df: pd.DataFrame,
         service_name: str,
         account_name: str
-    ) -> Dict[str, pd.DataFrame]:
+    ) -> Dict[str, Union[pd.DataFrame, str]]:
         if service_name == "debit":
             out_dict = self.debit(input_df, account_name)
         elif service_name == "credit":
@@ -98,7 +98,7 @@ class Institution():
 
     def debit(
         self, input_df: pd.DataFrame, account_name: str
-    ) -> Dict[str, pd.DataFrame]:
+    ) -> Dict[str, Union[pd.DataFrame, str]]:
         """docs here!"""
         sanity_df = self._debit_cleaning(input_df, account_name)
         out_df = self._output_trnsfrmr.output_df_creator(sanity_df)
@@ -111,7 +111,7 @@ class Institution():
 
     def credit(
         self, input_df: pd.DataFrame, account_name: str
-    ) -> Dict[str, pd.DataFrame]:
+    ) -> Dict[str, Union[pd.DataFrame, str]]:
         """docs here!"""
         sanity_df = self._credit_cleaning(input_df, account_name)
         out_df = self._output_trnsfrmr.output_df_creator(sanity_df)
@@ -124,7 +124,7 @@ class Institution():
 
     def third_party(
         self, input_df: pd.DataFrame, account_name: str
-    ) -> Dict[str, pd.DataFrame]:
+    ) -> Dict[str, Union[pd.DataFrame, str]]:
         """docs here!"""
         sanity_df = self._third_party_cleaning(input_df, account_name)
         out_df = self._output_trnsfrmr.output_df_creator(sanity_df)
@@ -137,7 +137,7 @@ class Institution():
 
     def exchange(
         self, input_df: pd.DataFrame, account_name: str
-    ) -> Dict[str, pd.DataFrame]:
+    ) -> Dict[str, Union[pd.DataFrame, str]]:
         """docs here!"""
         sanity_df = self._exchange_cleaning(input_df, account_name)
         out_df = self._output_trnsfrmr.output_df_creator(sanity_df)

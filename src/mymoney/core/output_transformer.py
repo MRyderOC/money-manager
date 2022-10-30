@@ -1,5 +1,5 @@
 import logging
-from typing import Dict
+from typing import Dict, Union
 
 import numpy as np
 import pandas as pd
@@ -35,7 +35,7 @@ class OutputTransformer():
         institution_name: str,
         service_name: str,
         account_name: str
-    ) -> Dict[str, pd.DataFrame]:
+    ) -> Dict[str, Union[pd.DataFrame, str]]:
         """docs here!"""
         if institution_name == "amex": the_institution_obj = amex.AmEx()
         elif institution_name == "capitalone": the_institution_obj = capitalone.CapitalOne()

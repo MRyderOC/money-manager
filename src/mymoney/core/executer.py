@@ -1,6 +1,6 @@
 import os
 import logging
-from typing import Dict
+from typing import Dict, Union
 
 import numpy as np
 import pandas as pd
@@ -27,7 +27,7 @@ class ExecClass():
         pass
 
 
-    def path_to_whole_data_dict(self, path: str, account_name: str = None) -> Dict[str, pd.DataFrame]:
+    def path_to_whole_data_dict(self, path: str, account_name: str = None) -> Dict[str, Union[pd.DataFrame, str]]:
         """docs here!"""
         input_data = self._data_reader.data_reader(path)
         if account_name:
