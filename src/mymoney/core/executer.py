@@ -1,12 +1,13 @@
 import os
 import logging
+import dataclasses
 from typing import Dict, Union
 
 import numpy as np
 import pandas as pd
 
+from mymoney.core import data_classes
 from mymoney.core import raw_data_reader
-from mymoney.core import output_transformer
 
 
 logging.basicConfig(
@@ -22,22 +23,23 @@ class ExecClass():
     # TODO: ETL Pipeline
 
     def __init__(self) -> None:
-        self._data_reader = raw_data_reader.RawDataReader()
-        self._output_trnsfrmr = output_transformer.OutputTransformer()
         pass
 
 
-    def path_to_whole_data_dict(self, path: str, account_name: str = None) -> Dict[str, Union[pd.DataFrame, str]]:
+    def path_to_whole_data(self, path: str, account_name: str = None) -> data_classes.WholeData:
         """docs here!"""
-        input_data = self._data_reader.data_reader(path)
+        data_reader_instance = raw_data_reader.RawDataReader()
+        input_data = data_reader_instance.data_reader(path)
         if account_name:
-            input_data["account_name"] = account_name
-        out_dict = self._output_trnsfrmr.institution_executer(**input_data)
-        input_data.update(out_dict)
-        input_data.update({
-            "path": path,
-        })
-        return input_data
+            input_data.account_name = account_name
+        transformed_data = input_data.institution_executer()
+
+        return data_classes.WholeData(
+            **{
+                **dataclasses.asdict(input_data),
+                **dataclasses.asdict(transformed_data)
+            }
+        )
 
 
     def traversal(self, folder_path: str = "./csv_files") -> Dict[str, pd.DataFrame]:
@@ -55,7 +57,7 @@ class ExecClass():
                         continue
 
                     path = os.path.join(dirname, filename)
-                    out_dict = self.path_to_whole_data_dict(path, account_name=name)
-                    all_outs_as_list.append(out_dict)
+                    whole_data = self.path_to_whole_data(path, account_name=name)
+                    all_outs_as_list.append(whole_data)
 
         return all_outs_as_list

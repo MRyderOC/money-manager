@@ -8,6 +8,8 @@ import pandas as pd
 from pandas.errors import ParserError
 from importlib_resources import files
 
+from mymoney.core import data_classes
+
 
 logging.basicConfig(
     level=logging.INFO,
@@ -39,7 +41,7 @@ class RawDataReader():
             )
 
 
-    def data_reader(self, path: str) -> Dict[str, Union[pd.DataFrame, str]]:
+    def data_reader(self, path: str) -> data_classes.RawData:
         """Read the data in the path and returns
         a DataFrame with the Institution name and it's service."""
 
@@ -56,12 +58,13 @@ class RawDataReader():
                     self._column_name_checker(input_df, cols)
                     account_name = os.path.basename(path).split(".")[0]
                     logging.info(f"Completed: {name} - {account_name}")
-                    return {
-                        "institution_name": institution,
-                        "service_name": service,
-                        "account_name": account_name,
-                        "input_df": input_df,
-                    }
+                    return data_classes.RawData(
+                        path=path,
+                        institution_name=institution,
+                        service_name=service,
+                        account_name=account_name,
+                        input_df=input_df,
+                    )
                 # except ParserError:
                 #     logging.warning(f"Parse Error: {name}")
                 except Exception as err:

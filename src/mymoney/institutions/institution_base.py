@@ -6,6 +6,8 @@ import numpy as np
 import pandas as pd
 from importlib_resources import files
 
+from mymoney.core import data_classes
+
 
 logging.basicConfig(
     level=logging.INFO,
@@ -66,22 +68,22 @@ class Institution():
         input_df: pd.DataFrame,
         service_name: str,
         account_name: str
-    ) -> Dict[str, Union[pd.DataFrame, str]]:
+    ) -> data_classes.TransformedData:
         if service_name == "debit":
-            out_dict = self.debit(input_df, account_name)
+            transformed_data = self.debit(input_df, account_name)
         elif service_name == "credit":
-            out_dict = self.credit(input_df, account_name)
+            transformed_data = self.credit(input_df, account_name)
         elif service_name == "3rdparty":
-            out_dict = self.third_party(input_df, account_name)
+            transformed_data = self.third_party(input_df, account_name)
         elif service_name == "exchange":
-            out_dict = self.exchange(input_df, account_name)
+            transformed_data = self.exchange(input_df, account_name)
         else:
             raise ValueError(
                 "service_name should be one of the following:"
                 " 'debit', 'credit', '3rdparty', 'exchange'."
             )
 
-        return out_dict
+        return transformed_data
 
 
     def _credit_cleaning(
@@ -111,52 +113,52 @@ class Institution():
 
     def debit(
         self, input_df: pd.DataFrame, account_name: str
-    ) -> Dict[str, Union[pd.DataFrame, str]]:
+    ) -> data_classes.TransformedData:
         """docs here!"""
         sanity_df = self._debit_cleaning(input_df, account_name)
         out_df = self._output_df_creator(sanity_df)
         # Error/Type checking in here if needed
-        return {
-            "sanity_df": sanity_df,
-            "output_df": out_df,
-            "out_type": "balance"
-        }
+        return data_classes.TransformedData(
+            sanity_df=sanity_df,
+            output_df=out_df,
+            out_type="balance",
+        )
 
     def credit(
         self, input_df: pd.DataFrame, account_name: str
-    ) -> Dict[str, Union[pd.DataFrame, str]]:
+    ) -> data_classes.TransformedData:
         """docs here!"""
         sanity_df = self._credit_cleaning(input_df, account_name)
         out_df = self._output_df_creator(sanity_df)
         # Error/Type checking in here if needed
-        return {
-            "sanity_df": sanity_df,
-            "output_df": out_df,
-            "out_type": "expense"
-        }
+        return data_classes.TransformedData(
+            sanity_df=sanity_df,
+            output_df=out_df,
+            out_type="expense",
+        )
 
     def third_party(
         self, input_df: pd.DataFrame, account_name: str
-    ) -> Dict[str, Union[pd.DataFrame, str]]:
+    ) -> data_classes.TransformedData:
         """docs here!"""
         sanity_df = self._third_party_cleaning(input_df, account_name)
         out_df = self._output_df_creator(sanity_df)
         # Error/Type checking in here if needed
-        return {
-            "sanity_df": sanity_df,
-            "output_df": out_df,
-            "out_type": "expense"
-        }
+        return data_classes.TransformedData(
+            sanity_df=sanity_df,
+            output_df=out_df,
+            out_type="expense",
+        )
 
     def exchange(
         self, input_df: pd.DataFrame, account_name: str
-    ) -> Dict[str, Union[pd.DataFrame, str]]:
+    ) -> data_classes.TransformedData:
         """docs here!"""
         sanity_df = self._exchange_cleaning(input_df, account_name)
         out_df = self._output_df_creator(sanity_df)
         # Error/Type checking in here if needed
-        return {
-            "sanity_df": sanity_df,
-            "output_df": out_df,
-            "out_type": "tarde"
-        }
+        return data_classes.TransformedData(
+            sanity_df=sanity_df,
+            output_df=out_df,
+            out_type="trade",
+        )
