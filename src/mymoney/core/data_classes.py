@@ -5,9 +5,6 @@ from typing import Dict, Union
 import numpy as np
 import pandas as pd
 
-from mymoney.core import raw_data_reader
-from mymoney.institutions import institution_base
-
 
 logging.basicConfig(
     level=logging.INFO,
@@ -26,7 +23,7 @@ class MyData:
 
 
 @dataclasses.dataclass
-class WholeData(raw_data_reader.RawData, institution_base.TransformedData):
+class WholeData:
     """docs here!"""
     path: str
     institution_name: str
@@ -36,3 +33,11 @@ class WholeData(raw_data_reader.RawData, institution_base.TransformedData):
     sanity_df: pd.DataFrame
     output_df: pd.DataFrame
     out_type: str
+
+
+    def generate_file_name(self) -> str:
+        """docs here!"""
+        last_date = str(self.output_df["Date"].max().date())
+        return (
+            f"{self.institution_name} - {self.service_name} - {self.account_name} ({last_date})"
+        )
