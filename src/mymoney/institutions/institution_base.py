@@ -1,12 +1,11 @@
 import json
 import logging
+import dataclasses
 from typing import Dict, Union
 
 import numpy as np
 import pandas as pd
 from importlib_resources import files
-
-from mymoney.core import data_classes
 
 
 logging.basicConfig(
@@ -15,6 +14,14 @@ logging.basicConfig(
     datefmt="%b/%d/%y %I:%M:%S %p",
     # filename="logs.log",
 )
+
+
+@dataclasses.dataclass
+class TransformedData:
+    """docs here!"""
+    sanity_df: pd.DataFrame
+    output_df: pd.DataFrame
+    out_type: str
 
 
 class Institution():
@@ -68,7 +75,7 @@ class Institution():
         input_df: pd.DataFrame,
         service_name: str,
         account_name: str
-    ) -> data_classes.TransformedData:
+    ) -> TransformedData:
         if service_name == "debit":
             transformed_data = self.debit(input_df, account_name)
         elif service_name == "credit":
@@ -113,12 +120,12 @@ class Institution():
 
     def debit(
         self, input_df: pd.DataFrame, account_name: str
-    ) -> data_classes.TransformedData:
+    ) -> TransformedData:
         """docs here!"""
         sanity_df = self._debit_cleaning(input_df, account_name)
         out_df = self._output_df_creator(sanity_df)
         # Error/Type checking in here if needed
-        return data_classes.TransformedData(
+        return TransformedData(
             sanity_df=sanity_df,
             output_df=out_df,
             out_type="balance",
@@ -126,12 +133,12 @@ class Institution():
 
     def credit(
         self, input_df: pd.DataFrame, account_name: str
-    ) -> data_classes.TransformedData:
+    ) -> TransformedData:
         """docs here!"""
         sanity_df = self._credit_cleaning(input_df, account_name)
         out_df = self._output_df_creator(sanity_df)
         # Error/Type checking in here if needed
-        return data_classes.TransformedData(
+        return TransformedData(
             sanity_df=sanity_df,
             output_df=out_df,
             out_type="expense",
@@ -139,12 +146,12 @@ class Institution():
 
     def third_party(
         self, input_df: pd.DataFrame, account_name: str
-    ) -> data_classes.TransformedData:
+    ) -> TransformedData:
         """docs here!"""
         sanity_df = self._third_party_cleaning(input_df, account_name)
         out_df = self._output_df_creator(sanity_df)
         # Error/Type checking in here if needed
-        return data_classes.TransformedData(
+        return TransformedData(
             sanity_df=sanity_df,
             output_df=out_df,
             out_type="expense",
@@ -152,12 +159,12 @@ class Institution():
 
     def exchange(
         self, input_df: pd.DataFrame, account_name: str
-    ) -> data_classes.TransformedData:
+    ) -> TransformedData:
         """docs here!"""
         sanity_df = self._exchange_cleaning(input_df, account_name)
         out_df = self._output_df_creator(sanity_df)
         # Error/Type checking in here if needed
-        return data_classes.TransformedData(
+        return TransformedData(
             sanity_df=sanity_df,
             output_df=out_df,
             out_type="trade",

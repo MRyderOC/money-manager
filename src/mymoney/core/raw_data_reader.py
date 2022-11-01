@@ -1,6 +1,7 @@
 import os
 import json
 import logging
+import dataclasses
 from typing import Dict, List, Union
 
 import numpy as np
@@ -8,8 +9,14 @@ import pandas as pd
 from pandas.errors import ParserError
 from importlib_resources import files
 
-from mymoney.core import data_classes
-
+from mymoney.institutions import institution_base
+from mymoney.institutions import amex
+from mymoney.institutions import capitalone
+from mymoney.institutions import chase
+from mymoney.institutions import citi
+from mymoney.institutions import discover
+from mymoney.institutions import paypal
+from mymoney.institutions import venmo
 
 logging.basicConfig(
     level=logging.INFO,
@@ -17,6 +24,37 @@ logging.basicConfig(
     datefmt="%b/%d/%y %I:%M:%S %p",
     # filename="logs.log",
 )
+
+
+@dataclasses.dataclass
+class RawData:
+    """docs here!"""
+    path: str
+    institution_name: str
+    service_name: str
+    account_name: str
+    input_df: pd.DataFrame
+
+
+    def institution_executer(self) -> institution_base.TransformedData:
+        """docs here!"""
+        if self.institution_name == "amex": the_institution_obj = amex.AmEx()
+        elif self.institution_name == "capitalone": the_institution_obj = capitalone.CapitalOne()
+        elif self.institution_name == "chase": the_institution_obj = chase.Chase()
+        elif self.institution_name == "citi": the_institution_obj = citi.Citi()
+        elif self.institution_name == "discover": the_institution_obj = discover.Discover()
+        elif self.institution_name == "paypal": the_institution_obj = paypal.PayPal()
+        elif self.institution_name == "venmo": the_institution_obj = venmo.Venmo()
+        else:
+            raise ValueError(
+                f"Institution {self.institution_name} is not supported yet."
+                "\nYou can file an issue and provide more information"
+                " to add the institution."
+            )
+        
+        return the_institution_obj.service_executer(
+            self.input_df, self.service_name, self.account_name
+        )
 
 
 class RawDataReader():
@@ -41,7 +79,7 @@ class RawDataReader():
             )
 
 
-    def data_reader(self, path: str) -> data_classes.RawData:
+    def data_reader(self, path: str) -> RawData:
         """Read the data in the path and returns
         a DataFrame with the Institution name and it's service."""
 
@@ -58,7 +96,7 @@ class RawDataReader():
                     self._column_name_checker(input_df, cols)
                     account_name = os.path.basename(path).split(".")[0]
                     logging.info(f"Completed: {name} - {account_name}")
-                    return data_classes.RawData(
+                    return RawData(
                         path=path,
                         institution_name=institution,
                         service_name=service,
