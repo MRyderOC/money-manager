@@ -126,3 +126,15 @@ class DataOperations():
             trade=trade,
             balance=balance
         )
+
+
+    def append_to_db(self, data: data_classes.WholeData):
+        """Get the WholeData and append to the right core data."""
+        self._is_data_folder_structure_exists(raises=True)
+
+        if data.out_type == "expense":
+            data.output_df.to_csv(self.expense_csv_path, mode="a", header=False)
+        elif data.out_type == "trade":
+            data.output_df.to_csv(self.trade_csv_path, mode="a", header=False)
+        elif data.out_type == "balance":
+            data.output_df.to_csv(self.balance_csv_path, mode="a", header=False)
