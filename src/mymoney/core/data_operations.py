@@ -1,4 +1,5 @@
 import os
+import shutil
 import logging
 from datetime import datetime
 from typing import Dict
@@ -17,13 +18,8 @@ logging.basicConfig(
 )
 
 
-current_time = datetime.today().strftime('%Y-%m-%d')
-
-
 class DataOperations():
     """docs here!"""
-    # TODO: Store results: expense, trades, balances(debit & wallet)
-    # TODO: Store raw data
 
     _expense_columns = [
         "Description", "Amount", "Date",
@@ -65,7 +61,7 @@ class DataOperations():
 
 
     def _is_data_folder_structure_exists(
-        self, path: str = None, raises: bool = False
+        self, path: str = None, raises: bool = False, log: bool = True
     ) -> bool:
         """docs here!"""
         if not path:
@@ -92,7 +88,8 @@ class DataOperations():
             if raises:
                 raise FileNotFoundError(error_msg)
 
-            logging.error(error_msg)
+            if log:
+                logging.error(error_msg)
             return False
 
         return True
@@ -104,6 +101,11 @@ class DataOperations():
         Create `data` folder with `core`, `raw` and `sanity_check` in it.
         Create 3 csv files with each specific headers.
         """
+        if self._is_data_folder_structure_exists(log=False):
+            raise Exception(
+                "data folder exists with correct structure."
+                " No need to initiate it again."
+            )
         # Creating the folders
         os.makedirs(self.core_folder_path, exist_ok=True)
         os.makedirs(self.raw_folder_path, exist_ok=True)
@@ -138,3 +140,34 @@ class DataOperations():
             data.output_df.to_csv(self.trade_csv_path, mode="a", header=False)
         elif data.out_type == "balance":
             data.output_df.to_csv(self.balance_csv_path, mode="a", header=False)
+
+
+    def store_raw_data(self, data: data_classes.WholeData, remove_source: bool = False):
+        """docs here!"""
+        self._is_data_folder_structure_exists(raises=True)
+
+        # Create a folder to store the data
+        current_time = datetime.today().strftime('%Y-%m-%d')
+        folder_path = os.path.join(self.raw_folder_path, current_time)
+        os.makedirs(folder_path, exist_ok=True)
+        # Store the data
+        file_name = data.generate_file_name()
+        target_path = os.path.join(folder_path, f"{file_name}.csv")
+        shutil.copyfile(data.path, target_path)
+        # Remove the source data if needed
+        if remove_source:
+            os.remove(data.path)
+
+
+    def store_sanity_data(self, data: data_classes.WholeData):
+        """docs here!"""
+        self._is_data_folder_structure_exists(raises=True)
+
+        # Create a folder to store the data
+        current_time = datetime.today().strftime('%Y-%m-%d')
+        folder_path = os.path.join(self.sanity_folder_path, current_time)
+        os.makedirs(folder_path, exist_ok=True)
+        # Store the data
+        file_name = data.generate_file_name()
+        target_path = os.path.join(folder_path, f"{file_name}.csv")
+        data.sanity_df.to_csv(target_path)
