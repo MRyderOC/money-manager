@@ -43,21 +43,21 @@ class DataOperations():
     def __init__(self, data_folder_path: str = None) -> None:
         # Set the data_folder_path to `<HOME-DIR>/mymoney/data` as default
         if not data_folder_path:
-            self.data_folder_path = os.path.join(os.environ["HOME"], "mymoeny/data")
+            self._data_folder_path = os.path.join(os.environ["HOME"], "mymoeny/data")
             _ = self._is_data_folder_structure_exists()
         else:
             if self._is_data_folder_structure_exists(data_folder_path):
                 if os.path.basename(data_folder_path) != "data":
                     data_folder_path = os.path.join(data_folder_path, "data")
-                self.data_folder_path = data_folder_path
+                self._data_folder_path = data_folder_path
 
-        self.core_folder_path = os.path.join(self.data_folder_path, "core")
-        self.raw_folder_path = os.path.join(self.data_folder_path, "raw")
-        self.sanity_folder_path = os.path.join(self.data_folder_path, "sanity")
+        self._core_folder_path = os.path.join(self._data_folder_path, "core")
+        self._raw_folder_path = os.path.join(self._data_folder_path, "raw")
+        self._sanity_folder_path = os.path.join(self._data_folder_path, "sanity")
 
-        self.expense_csv_path = os.path.join(self.core_folder_path, "expense.csv")
-        self.trade_csv_path = os.path.join(self.core_folder_path, "trade.csv")
-        self.balance_csv_path = os.path.join(self.core_folder_path, "balance.csv")
+        self._expense_csv_path = os.path.join(self._core_folder_path, "expense.csv")
+        self._trade_csv_path = os.path.join(self._core_folder_path, "trade.csv")
+        self._balance_csv_path = os.path.join(self._core_folder_path, "balance.csv")
 
 
     def _is_data_folder_structure_exists(
@@ -65,7 +65,7 @@ class DataOperations():
     ) -> bool:
         """docs here!"""
         if not path:
-            path = self.data_folder_path
+            path = self._data_folder_path
 
         if os.path.basename(path) != "data":
             data_folder_path = os.path.join(path, "data")
@@ -87,9 +87,9 @@ class DataOperations():
             )
             if raises:
                 raise FileNotFoundError(error_msg)
-
             if log:
                 logging.error(error_msg)
+
             return False
 
         return True
@@ -107,21 +107,21 @@ class DataOperations():
                 " No need to initiate it again."
             )
         # Creating the folders
-        os.makedirs(self.core_folder_path, exist_ok=True)
-        os.makedirs(self.raw_folder_path, exist_ok=True)
-        os.makedirs(self.sanity_folder_path, exist_ok=True)
+        os.makedirs(self._core_folder_path, exist_ok=True)
+        os.makedirs(self._raw_folder_path, exist_ok=True)
+        os.makedirs(self._sanity_folder_path, exist_ok=True)
 
         # Creating the core csv files
-        pd.DataFrame(columns=self._expense_columns).to_csv(self.expense_csv_path, index=False)
-        pd.DataFrame(columns=self._trade_columns).to_csv(self.trade_csv_path, index=False)
-        pd.DataFrame(columns=self._balance_columns).to_csv(self.balance_csv_path, index=False)
+        pd.DataFrame(columns=self._expense_columns).to_csv(self._expense_csv_path, index=False)
+        pd.DataFrame(columns=self._trade_columns).to_csv(self._trade_csv_path, index=False)
+        pd.DataFrame(columns=self._balance_columns).to_csv(self._balance_csv_path, index=False)
 
 
     def load_db(self) -> data_classes.MyData:
         """Read csv files from core folder and return corresponding dataframes."""
-        expense = pd.read_csv(self.expense_csv_path)
-        trade = pd.read_csv(self.trade_csv_path)
-        balance = pd.read_csv(self.balance_csv_path)
+        expense = pd.read_csv(self._expense_csv_path)
+        trade = pd.read_csv(self._trade_csv_path)
+        balance = pd.read_csv(self._balance_csv_path)
 
         return data_classes.MyData(
             expense=expense,
@@ -135,11 +135,11 @@ class DataOperations():
         self._is_data_folder_structure_exists(raises=True)
 
         if data.out_type == "expense":
-            data.output_df.to_csv(self.expense_csv_path, mode="a", header=False)
+            data.output_df.to_csv(self._expense_csv_path, mode="a", header=False)
         elif data.out_type == "trade":
-            data.output_df.to_csv(self.trade_csv_path, mode="a", header=False)
+            data.output_df.to_csv(self._trade_csv_path, mode="a", header=False)
         elif data.out_type == "balance":
-            data.output_df.to_csv(self.balance_csv_path, mode="a", header=False)
+            data.output_df.to_csv(self._balance_csv_path, mode="a", header=False)
 
 
     def store_raw_data(self, data: data_classes.WholeData, remove_source: bool = False):
@@ -148,7 +148,7 @@ class DataOperations():
 
         # Create a folder to store the data
         current_time = datetime.today().strftime('%Y-%m-%d')
-        folder_path = os.path.join(self.raw_folder_path, current_time)
+        folder_path = os.path.join(self._raw_folder_path, current_time)
         os.makedirs(folder_path, exist_ok=True)
         # Store the data
         file_name = data.generate_file_name()
@@ -165,7 +165,7 @@ class DataOperations():
 
         # Create a folder to store the data
         current_time = datetime.today().strftime('%Y-%m-%d')
-        folder_path = os.path.join(self.sanity_folder_path, current_time)
+        folder_path = os.path.join(self._sanity_folder_path, current_time)
         os.makedirs(folder_path, exist_ok=True)
         # Store the data
         file_name = data.generate_file_name()
