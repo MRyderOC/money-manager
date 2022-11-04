@@ -135,11 +135,11 @@ class DataOperations():
         self._is_data_folder_structure_exists(raises=True)
 
         if data.out_type == "expense":
-            data.output_df.to_csv(self._expense_csv_path, mode="a", header=False)
+            data.output_df.to_csv(self._expense_csv_path, mode="a", header=False, index=False)
         elif data.out_type == "trade":
-            data.output_df.to_csv(self._trade_csv_path, mode="a", header=False)
+            data.output_df.to_csv(self._trade_csv_path, mode="a", header=False, index=False)
         elif data.out_type == "balance":
-            data.output_df.to_csv(self._balance_csv_path, mode="a", header=False)
+            data.output_df.to_csv(self._balance_csv_path, mode="a", header=False, index=False)
 
 
     def store_raw_data(self, data: data_classes.WholeData, remove_source: bool = False):
