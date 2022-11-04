@@ -62,7 +62,7 @@ class PayPal(institution_base.Institution):
         input_df["_new_Date"] = input_df["Date"].copy(deep=True)
         input_df["_new_InstitutionCategory"] = pd.Series([np.nan] * len(input_df))
         input_df["_new_MyCategory"] = pd.Series([np.nan] * len(input_df))
-        input_df["_new_Institution"] = pd.Series([f"PayPal"] * len(input_df))
+        input_df["_new_Institution"] = pd.Series([f"PayPal {account_name}"] * len(input_df))
         input_df["_new_IsTransfer"] = input_df.apply(is_transfer_finder, axis=1)
 
         return input_df
