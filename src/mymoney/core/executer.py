@@ -1,13 +1,14 @@
 import os
 import logging
 import dataclasses
-from typing import Dict, Union
+from typing import List, Union
 
 import numpy as np
 import pandas as pd
 
 from mymoney.core import data_classes
 from mymoney.core import raw_data_reader
+from mymoney.core import data_operations
 
 
 logging.basicConfig(
@@ -42,9 +43,17 @@ class ExecClass():
         )
 
 
-    def traversal(self, folder_path: str = "./csv_files") -> Dict[str, pd.DataFrame]:
-        """Traverse csv_files folder by default and
-        return two DataFrames each for trades and expenses.
+    def traversal(
+        self,
+        folder_path: str,
+        append_to_db: bool = True,
+        store_sanity_data: bool = True,
+        store_raw_data: bool = True,
+        remove_source: bool = True,
+        return_whole_data_list: bool = True
+    ) -> Union[List[data_classes.WholeData], None]:
+        """Traverse `folder_path` and
+        return a list contains WholeData for each file in the folder_path.
         Note: This function does not traverse inner folders.
         """
         all_outs_as_list = []
@@ -60,4 +69,16 @@ class ExecClass():
                     whole_data = self.path_to_whole_data(path, account_name=name)
                     all_outs_as_list.append(whole_data)
 
-        return all_outs_as_list
+        data_op_instance = data_operations.DataOperations()
+
+        for wd in all_outs_as_list:
+            if append_to_db:
+                data_op_instance.append_to_db(wd)
+            if store_sanity_data:
+                data_op_instance.store_sanity_data(wd)
+            if store_raw_data:
+                data_op_instance.store_raw_data(wd, remove_source)
+
+        if return_whole_data_list:
+            return all_outs_as_list
+        return
