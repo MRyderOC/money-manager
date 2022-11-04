@@ -119,8 +119,13 @@ class DataOperations():
 
     def load_db(self) -> data_classes.MyData:
         """Read csv files from core folder and return corresponding dataframes."""
-        expense = pd.read_csv(self._expense_csv_path)
-        trade = pd.read_csv(self._trade_csv_path)
+        expense = pd.read_csv(
+            self._expense_csv_path, parse_dates=["Date"]
+        ).sort_values("Date").reset_index(drop=True)
+        trade = pd.read_csv(
+            self._trade_csv_path, parse_dates=["Datetime"]
+        ).sort_values("Datetime").reset_index(drop=True)
+        # TODO: parse_date for balance
         balance = pd.read_csv(self._balance_csv_path)
 
         return data_classes.MyData(
