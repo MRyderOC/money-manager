@@ -1,4 +1,4 @@
-mymoney
+money-manager
 numpy
 pandas>=1.4.4
 matplotlib>=3.6.2
