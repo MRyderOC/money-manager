@@ -1,2 +1,2 @@
 # money-manager
-A Python package to track your money
+A Python package to manage and track your money
