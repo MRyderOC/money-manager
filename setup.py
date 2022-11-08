@@ -5,10 +5,10 @@ here = pathlib.Path(__file__).parent.resolve()
 
 # Get the long description from the README file
 long_description = (here / "README.md").read_text(encoding="utf-8")
-source_url = "https://github.com/MRyderOC/mymoney"
+source_url = "https://github.com/MRyderOC/money-manager"
 
 setup(
-    name="mymoney",
+    name="money-manager",
     version="0.0.1",
     description="A package to manage your money.",
     long_description=long_description,
@@ -25,9 +25,8 @@ setup(
     # PyPA Optionals
     keywords="finance, expense, money",
     project_urls={
-        "Bug Reports": "https://github.com/MRyderOC/mymoney/issues",
+        "Bug Reports": "https://github.com/MRyderOC/money-manager/issues",
         "Source": source_url,
     },
     # classifiers=[],
-
 )
