@@ -1,4 +1,45 @@
 {
+    "base": {
+        "expense": {
+            "columns": [
+                "Description", "Amount", "Date",
+                "InstitutionCategory", "MyCategory",
+                "Institution", "IsTransfer"
+            ],
+            "read_args": {
+                "header": 0,
+                "parse_dates": ["Date"],
+                "names": null
+            }
+        },
+        "balacnce": {
+            "columns": [],
+            "read_args": {
+                "header": 0,
+                "parse_dates": [],
+                "names": null
+            }
+        },
+        "trade": {
+            "columns": [
+                "Datetime",
+                "From Account", "To Account",
+                "From Asset", "To Asset",
+                "In Amount", "Out Amount",
+                "Fee Asset", "Fee Amount", "Fee Value",
+                "Trx Type", "Trx Sub Type",
+                "Asset Type",
+                "USD Amount"
+            ],
+            "read_args": {
+                "header": 0,
+                "parse_dates": ["Datetime"],
+                "names": null
+            }
+        }
+    },
+
+
     "amex": {
         "credit": {
             "columns": [
@@ -18,25 +59,6 @@
                 "header": 0,
                 "parse_dates": [
                     "Date"
-                ],
-                "names": null
-            }
-        }
-    },
-    "discover": {
-        "credit": {
-            "columns": [
-                "Trans. Date",
-                "Post Date",
-                "Description",
-                "Amount",
-                "Category"
-            ],
-            "read_args": {
-                "header": 0,
-                "parse_dates": [
-                    "Trans. Date",
-                    "Post Date"
                 ],
                 "names": null
             }
@@ -80,24 +102,6 @@
             }
         }
     },
-    "citi": {
-        "credit": {
-            "columns": [
-                "Status",
-                "Date",
-                "Description",
-                "Debit",
-                "Credit"
-            ],
-            "read_args": {
-                "header": 0,
-                "parse_dates": [
-                    "Date"
-                ],
-                "names": null
-            }
-        }
-    },
     "chase": {
         "credit": {
             "columns": [
@@ -119,25 +123,43 @@
             }
         }
     },
-    "wellsfargo": {
-        "debit": {
-            "columns": [],
+    "citi": {
+        "credit": {
+            "columns": [
+                "Status",
+                "Date",
+                "Description",
+                "Debit",
+                "Credit"
+            ],
             "read_args": {
                 "header": 0,
                 "parse_dates": [
                     "Date"
                 ],
-                "names": [
-                    "Date",
-                    "Amount",
-                    "x",
-                    "y",
-                    "Title"
-                ]
+                "names": null
             }
         }
     },
-
+    "discover": {
+        "credit": {
+            "columns": [
+                "Trans. Date",
+                "Post Date",
+                "Description",
+                "Amount",
+                "Category"
+            ],
+            "read_args": {
+                "header": 0,
+                "parse_dates": [
+                    "Trans. Date",
+                    "Post Date"
+                ],
+                "names": null
+            }
+        }
+    },
     "paypal": {
         "3rdparty": {
             "columns": [
@@ -161,9 +183,6 @@
             }
         }
     },
-
-
-
     "venmo": {
         "3rdparty": {
             "columns": [
@@ -196,11 +215,28 @@
             }
         }
     },
+    "wellsfargo": {
+        "debit": {
+            "columns": [],
+            "read_args": {
+                "header": 0,
+                "parse_dates": [
+                    "Date"
+                ],
+                "names": [
+                    "Date",
+                    "Amount",
+                    "x",
+                    "y",
+                    "Title"
+                ]
+            }
+        }
+    },
+
+
+
     "cashapp": {},
-
-
-
-    
     "coinbase": {
         "exchange": {
             "columns": [
@@ -298,7 +334,6 @@
             }
         }
     },
-
 
     "robinhood": {},
     "sofi": {}
