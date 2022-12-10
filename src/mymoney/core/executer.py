@@ -46,10 +46,10 @@ class ExecClass():
     def traversal(
         self,
         folder_path: str,
-        append_to_db: bool = True,
+        append_to_db: bool = False,
         store_sanity_data: bool = True,
-        store_raw_data: bool = True,
-        remove_source: bool = True,
+        store_raw_data: bool = False,
+        remove_source: bool = False,
         return_whole_data_list: bool = True
     ) -> Union[List[data_classes.WholeData], None]:
         """Traverse `folder_path` and
