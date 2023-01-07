@@ -26,6 +26,11 @@ logging.basicConfig(
 )
 
 
+class DifferentColumnNameException(Exception):
+    """Exception class for comparing 2 DataFrames with different columns."""
+    pass
+
+
 @dataclasses.dataclass
 class RawData:
     """docs here!"""
@@ -72,10 +77,10 @@ class RawDataReader():
     def _column_name_checker(
         self, input_df: pd.DataFrame, columns: List[str]
     ):
-        """Check if the columns of input_df is identical to the stored columns."""
+        """Check if the columns of `input_df` is identical to `columns`."""
         if set(input_df.columns) != set(columns):
-            raise Exception(
-                "DataFrame columns are not matched with our database."
+            raise DifferentColumnNameException(
+                "DataFrame columns are not matched with `columns`."
             )
 
 
