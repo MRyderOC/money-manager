@@ -6,7 +6,6 @@ from typing import Dict, List, Union
 
 import numpy as np
 import pandas as pd
-from pandas.errors import ParserError
 from importlib_resources import files
 
 from mymoney.institutions import institution_base
@@ -64,8 +63,6 @@ class RawData:
 
 class RawDataReader():
     """Main class for reading data."""
-    # TODO: WellsFargo data reader
-    # TODO: Data reader for base: expense & trade (meta_data.json)
 
 
     def __init__(self) -> None:
@@ -84,22 +81,46 @@ class RawDataReader():
             )
 
 
+    def _is_wellsfargo(self, input_df: pd.DataFrame) -> bool:
+        """Check whether the `input_df` is a WellsFargo DataFrame."""
+
+        check_wellsfargo = (
+            "Unnamed: 3" in input_df.columns and "*" in input_df.columns,
+            (input_df["Unnamed: 3"].isna()).all(),
+            (input_df["*"] == "*").all(),
+        )
+        if not all(check_wellsfargo):
+            return False
+
+        return True
+
+
     def data_reader(self, path: str) -> RawData:
-        """Read the data in the path and returns
+        """Read the data in the `path` and returns
         a DataFrame with the Institution name and it's service."""
 
         for institution in self._meta_data:
             for service in self._meta_data[institution]:
                 name = f"{institution}/{service}"
-
                 cols = self._meta_data[institution][service]["columns"]
                 read_args = self._meta_data[institution][service]["read_args"]
+                account_name = os.path.basename(path).split(".")[0]
 
                 # Read the data
+                read_flag = False
+                error_msg = ""
                 try:
                     input_df = pd.read_csv(filepath_or_buffer=path, **read_args)
                     self._column_name_checker(input_df, cols)
-                    account_name = os.path.basename(path).split(".")[0]
+                    read_flag = True
+                except Exception as err:
+                    error_msg = err
+                    if institution == "wellsfargo":
+                        if self._is_wellsfargo(pd.read_csv(path)):
+                            input_df = pd.read_csv(filepath_or_buffer=path, **read_args)
+                            read_flag = True
+
+                if read_flag:
                     logging.info(f"Completed: {name} - {account_name}")
                     return RawData(
                         path=path,
@@ -108,10 +129,8 @@ class RawDataReader():
                         account_name=account_name,
                         input_df=input_df,
                     )
-                # except ParserError:
-                #     logging.warning(f"Parse Error: {name}")
-                except Exception as err:
-                    # logging.warning(f"An error occurred for {name}: {err}")
+                else:
+                    # logging.warning(f"An error occurred for {name}: {error_msg}")
                     continue
 
         # Log a warning if data can not be read
