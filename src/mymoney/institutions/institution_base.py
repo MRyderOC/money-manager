@@ -1,12 +1,13 @@
 import json
 import logging
 import dataclasses
-from typing import Dict, Union
+from typing import List, Dict, Union
 
 import numpy as np
 import pandas as pd
 from importlib_resources import files
 
+from mymoney.core.data_validation import DataFrameValidation
 
 logging.basicConfig(
     level=logging.INFO,
@@ -70,6 +71,30 @@ class Institution():
         return df.drop(columns=old_columns).rename(columns=new_columns_name_map)
 
 
+    def _data_validation(
+        self, input_df: pd.DataFrame, service_name: str
+    ) -> pd.DataFrame:
+        """docs here!"""
+        val_data = self._this_meta_data[service_name].get("validation_data")
+        if not val_data:
+            raise Exception(
+                "Validation data is not available."
+            )
+
+        schema = val_data.get("schema")
+        col_vals = val_data.get("column_values")
+
+        df_validate_instance = DataFrameValidation(input_df)
+        if schema:
+            df_validate_instance.has_schema(schema)
+        if col_vals:
+            input_df["_new_IsValid"] = df_validate_instance.has_vals(
+                col_vals_dict=col_vals, return_validation_col=True
+            )
+
+        return input_df
+
+
     def service_executer(
         self,
         input_df: pd.DataFrame,
@@ -122,9 +147,10 @@ class Institution():
         self, input_df: pd.DataFrame, account_name: str
     ) -> TransformedData:
         """docs here!"""
-        sanity_df = self._debit_cleaning(input_df, account_name)
+        whole_df = self._debit_cleaning(input_df, account_name)
+        sanity_df = self._data_validation(whole_df, "debit")
         out_df = self._output_df_creator(sanity_df)
-        # Error/Type checking in here if needed
+
         return TransformedData(
             sanity_df=sanity_df,
             output_df=out_df,
@@ -135,9 +161,10 @@ class Institution():
         self, input_df: pd.DataFrame, account_name: str
     ) -> TransformedData:
         """docs here!"""
-        sanity_df = self._credit_cleaning(input_df, account_name)
+        whole_df = self._credit_cleaning(input_df, account_name)
+        sanity_df = self._data_validation(whole_df, "credit")
         out_df = self._output_df_creator(sanity_df)
-        # Error/Type checking in here if needed
+
         return TransformedData(
             sanity_df=sanity_df,
             output_df=out_df,
@@ -148,9 +175,10 @@ class Institution():
         self, input_df: pd.DataFrame, account_name: str
     ) -> TransformedData:
         """docs here!"""
-        sanity_df = self._third_party_cleaning(input_df, account_name)
+        whole_df = self._third_party_cleaning(input_df, account_name)
+        sanity_df = self._data_validation(whole_df, "3rdparty")
         out_df = self._output_df_creator(sanity_df)
-        # Error/Type checking in here if needed
+
         return TransformedData(
             sanity_df=sanity_df,
             output_df=out_df,
@@ -161,9 +189,10 @@ class Institution():
         self, input_df: pd.DataFrame, account_name: str
     ) -> TransformedData:
         """docs here!"""
-        sanity_df = self._exchange_cleaning(input_df, account_name)
+        whole_df = self._exchange_cleaning(input_df, account_name)
+        sanity_df = self._data_validation(whole_df, "exchange")
         out_df = self._output_df_creator(sanity_df)
-        # Error/Type checking in here if needed
+
         return TransformedData(
             sanity_df=sanity_df,
             output_df=out_df,
