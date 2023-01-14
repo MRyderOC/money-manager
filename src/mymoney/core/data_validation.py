@@ -139,7 +139,7 @@ class SeriesValidation:
 
 
     def _check_vals(
-        self, values, mode: str
+        self, values, mode: str, na_action: str = None
     ) -> Union[bool, Dict[str, List[int]]]:
         """Check whether the Series contains `values`.
 
@@ -152,12 +152,17 @@ class SeriesValidation:
                     'regex' -> values of the Series have the `values`
                         regex pattern,
                     ('n_std' or 'n-std' or 'n std') -> values of the Series
-                        are within `values` standard devation of the mean,
+                        are within `values` standard deviation of the mean,
                     'equal' -> values of the Series are exactly like `values`,
                     'subset' -> `values` is subset of values in the Series,
                     'superset' -> `values` is superset of values in the Series,
                 ]
+            na_action (str):
+                If 'ignore', it won't include NaNs in the process.
         """
+        to_check_ser = self._obj
+        if na_action == "ignore":
+            to_check_ser = self._obj[self._obj.notnull()]
         if mode == "range":
             # Type error checking
             if not len(values) == 2:
@@ -166,8 +171,8 @@ class SeriesValidation:
                     " a list or tuple with 2 elements."
                 )
 
-            new_ser = self._obj[
-                (self._obj < values[0]) | (self._obj > values[1])
+            new_ser = to_check_ser[
+                (to_check_ser < values[0]) | (to_check_ser > values[1])
             ]
             if not new_ser.empty:
                 return {"idxs": self._find_faulty_indexes(new_ser)}
@@ -177,21 +182,21 @@ class SeriesValidation:
             if not pd.api.types.is_re_compilable(values):
                 raise ValueError("`values` is not a regex compilable string.")
 
-            new_ser = self._obj.astype(str).str.contains(values, na=False, regex=True)
+            new_ser = to_check_ser.astype(str).str.contains(values, na=False, regex=True)
             if not new_ser.all():
                 return {"idxs": self._find_faulty_indexes(new_ser)}
             return True
         elif mode in ["n_std", "n-std", "n std"]:
             # Type error checking
-            if not pd.api.types.is_numeric_dtype(self._obj):
+            if not pd.api.types.is_numeric_dtype(to_check_ser):
                 raise Exception("This series does not contain numeric values.")
             if not isinstance(values, (int, float)):
                 raise ValueError(
                     "`values` for mode 'n-std' should be int or float."
                 )
 
-            mean, std = self._obj.mean(), self._obj.std()
-            dist_from_mean_ser = np.abs(self._obj - mean)
+            mean, std = to_check_ser.mean(), to_check_ser.std()
+            dist_from_mean_ser = np.abs(to_check_ser - mean)
             outliers = dist_from_mean_ser[dist_from_mean_ser > values * std]
             if not outliers.empty:
                 return {"idxs": self._find_faulty_indexes(outliers)}
@@ -204,14 +209,14 @@ class SeriesValidation:
                     " 'list', 'set', 'np.ndarray'."
                 )
 
-            ser_unique_vals_set = set(self._obj.unique())
+            ser_unique_vals_set = set(to_check_ser.unique())
             vals_set = set(values)
             if mode == "equal":
                 if vals_set != ser_unique_vals_set:
                     ser_extra = ser_unique_vals_set - vals_set
                     values_extra = vals_set - ser_unique_vals_set
                     return {
-                        "idxs": self._find_faulty_indexes(~self._obj.isin(ser_extra)),
+                        "idxs": self._find_faulty_indexes(~to_check_ser.isin(ser_extra)),
                         "extra_vals": list(values_extra)
                     }
                 return True
@@ -221,7 +226,7 @@ class SeriesValidation:
                 return True
             elif mode == "superset":
                 if not vals_set.issuperset(ser_unique_vals_set):
-                    return {"idxs": self._find_faulty_indexes(self._obj.isin(values))}
+                    return {"idxs": self._find_faulty_indexes(to_check_ser.isin(values))}
                 return True
         else:
             raise Exception(
@@ -293,6 +298,7 @@ class SeriesValidation:
         self,
         values,
         mode: str,
+        na_action: str = None,
         logs: bool = True,
         raises: bool = False,
     ):
@@ -312,12 +318,14 @@ class SeriesValidation:
                     'subset' -> `values` is subset of values in the Series,
                     'superset' -> `values` is superset of values in the Series,
                 ]
+            na_action (str):
+                If 'ignore', it won't include NaNs in the process.
             logs (bool):
                 Whether to log the results if something went wrong.
             raises (bool):
                 Whether to raise an error or not.
         """
-        error_dict = self._check_vals(values, mode)
+        error_dict = self._check_vals(values, mode, na_action)
         if not(error_dict is True):
             msg = ""
             if mode == "range":
@@ -490,7 +498,7 @@ class DataFrameValidation:
             col_vals_dict (Dict[str, Dict[str, Any]]):
                 A dictionary with keys as column names and values should be
                 a dictionary like
-                  {"vlaues": `desired value`, "mode": `desired mode`}
+                  {"vlaues": `desired value`, "mode": `desired mode`, "na_action": `desired action`}
                 Refer to `has_vals` method in `SeriesValidation` for more info.
             validation_column (bool):
                 Create `is_valid` column in the DataFrame with bool values to
