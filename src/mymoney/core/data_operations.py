@@ -6,6 +6,7 @@ from typing import Dict
 
 import numpy as np
 import pandas as pd
+import gspread
 
 from mymoney.core import data_classes
 
@@ -176,3 +177,106 @@ class FolderOperations():
         file_name = data.generate_file_name()
         target_path = os.path.join(folder_path, f"{file_name}.csv")
         data.sanity_df.to_csv(target_path)
+
+
+
+class SheetsOperations():
+    """docs here!"""
+
+    def __init__(self, sheet_name: str = None, creds_path: str = None, creds_dict: Dict[str, str] = None) -> None:
+        # Authentication
+        if creds_path:
+            self._gc = gspread.service_account(filename=creds_path)
+        elif creds_dict:
+            self._gc = gspread.service_account_from_dict(creds_dict)
+        else:
+            raise Exception()
+
+        # Set the sheet_name to `MyMoney` as default
+        self._sheet_name = sheet_name if sheet_name else "MyMoney"
+
+        if not self._is_sheets_structure_exists():
+            return
+
+        self._the_sheet = self._gc.open(sheet_name)
+        # Get the related worksheets
+        self._expense_wsheet = self._the_sheet.worksheet("expense")
+        self._balance_wsheet = self._the_sheet.worksheet("balance")
+        self._trade_wsheet = self._the_sheet.worksheet("trade")
+
+
+    def _raise_or_log(
+        self,
+        message: str,
+        logs: bool = True,
+        raises: bool = False,
+        exception_type = Exception,
+    ):
+        """Raise an exception or log a message.
+
+        Args:
+            message (str):
+                The message that should be attached.
+            logs (bool):
+                Whether to log the results if something went wrong.
+            raises (bool):
+                Whether to raise an error or not.
+            exception_type:
+                The exception that should be raised.
+        """
+        if logs:
+            logging.warning(message)
+        if raises:
+            raise exception_type(message)
+
+
+    def _is_sheets_structure_exists(self, sheet_name: str = None, logs: bool = True, raises: bool = False) -> bool:
+        """docs here!"""
+        if not sheet_name:
+            sheet_name = self._sheet_name
+
+        # Open the sheets
+        try:
+            the_sheet = self._gc.open(sheet_name)
+        except Exception as err:
+            msg = (
+                f"Couldn't open the sheet `{sheet_name}`. Use `initiate_sheets` to create appropriate sheet."
+                f"\nError: {err}."
+            )
+            self._raise_or_log(msg, logs, raises)
+            return False
+        # Check the worksheets
+        worksheets_list = the_sheet.worksheets()
+        targeted_worksheets = ["expense", "balance", "trade"]
+        for item in targeted_worksheets:
+            if item not in worksheets_list:
+                msg = f"The worksheet `{item}` is not present in the sheet."
+                self._raise_or_log(msg, logs, raises)
+                return False
+
+        return True
+
+
+    def initiate_sheets(self, sheet_name: str = None, share_address: str = None):
+        """docs here!"""
+        if not sheet_name:
+            sheet_name = self._sheet_name
+
+        self._the_sheet = self._gc.create(sheet_name)
+        self._expense_wsheet = self._the_sheet.add_worksheet(title="expense", rows=100, cols=20)
+        self._balance_wsheet = self._the_sheet.add_worksheet(title="balance", rows=100, cols=20)
+        self._trade_wsheet = self._the_sheet.add_worksheet(title="trade", rows=100, cols=20)
+
+        if share_address:
+            self._the_sheet.share(share_address, perm_type="user", role="writer")
+
+
+    def load_sheets(self) -> data_classes.MyData:
+        """docs here!"""
+        self._is_sheets_structure_exists(raises=True)
+
+        return data_classes.MyData(
+            expense=pd.DataFrame(self._expense_wsheet.get_all_records()),
+            balance=pd.DataFrame(self._balance_wsheet.get_all_records()),
+            trade=pd.DataFrame(self._trade_wsheet.get_all_records())
+        )
