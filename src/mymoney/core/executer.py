@@ -15,7 +15,6 @@ logging.basicConfig(
     level=logging.INFO,
     format="%(name)s\t[%(asctime)s] %(levelname)s: %(message)s",
     datefmt="%b/%d/%y %I:%M:%S %p",
-    # filename="logs.log",
 )
 
 
@@ -69,7 +68,7 @@ class ExecClass():
                     whole_data = self.path_to_whole_data(path, account_name=name)
                     all_outs_as_list.append(whole_data)
 
-        data_op_instance = data_operations.DataOperations()
+        data_op_instance = data_operations.FolderOperations()
 
         for wd in all_outs_as_list:
             if append_to_db:
