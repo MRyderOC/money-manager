@@ -1,7 +1,5 @@
 import logging
-from typing import (
-    Any, List, Tuple, Dict, Union
-)
+from typing import Any, List, Tuple, Dict, Union
 
 import numpy as np
 import pandas as pd
@@ -11,7 +9,6 @@ logging.basicConfig(
     level=logging.INFO,
     format="%(name)s\t[%(asctime)s] %(levelname)s: %(message)s",
     datefmt="%b/%d/%y %I:%M:%S %p",
-    # filename="logs.log",
 )
 
 
