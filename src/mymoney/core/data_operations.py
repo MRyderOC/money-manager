@@ -14,12 +14,12 @@ logging.basicConfig(
     level=logging.INFO,
     format="%(name)s\t[%(asctime)s] %(levelname)s: %(message)s",
     datefmt="%b/%d/%y %I:%M:%S %p",
-    # filename="logs.log",
 )
 
 
-class DataOperations():
+class FolderOperations():
     """docs here!"""
+    # TODO: Duplicate finder in self.append_to_db()
 
     _expense_columns = [
         "Description", "Amount", "Date",
