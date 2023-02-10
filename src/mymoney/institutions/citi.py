@@ -1,4 +1,5 @@
 import logging
+import re
 
 import numpy as np
 import pandas as pd
@@ -30,19 +31,34 @@ class Citi(institution_base.Institution):
             self, input_df: pd.DataFrame, account_name: str
         ) -> pd.DataFrame:
             """docs here!"""
+            # # row["_new_Description"].startswith("Thankyou Points Redeemed"): for point redeem
 
             def amount_finder(row):
-                return row["Credit"] if np.isnan(row["Debit"]) else -row["Debit"]
-
-            def is_transfer_finder(row):
-                if not np.isnan(row["Credit"]):
-                    return "transfer"
-                elif not np.isnan(row["Debit"]):
-                    return "expense"
-                else:
+                try:
+                    regex_flag = re.search("AUTOPAY|ONLINE PAYMENT, THANK YOU", str(row["_new_Description"]))
+                except Exception:
                     return "consider"
 
-            input_df["_new_Description"] = input_df["Description"].copy(deep=True)
+                if regex_flag:
+                    return row["Credit"]
+                elif np.isnan(row["Debit"]):
+                    return -row["Credit"] 
+                else:
+                    return -row["Debit"]
+
+            def is_transfer_finder(row):
+                try:
+                    regex_flag = re.search("AUTOPAY|ONLINE PAYMENT, THANK YOU", str(row["_new_Description"]))
+                except Exception:
+                    return "consider"
+
+                if regex_flag:
+                    return "consider" if np.isnan(row["Credit"]) else "transfer"
+                else:
+                    return "expense"
+
+
+            input_df["_new_Description"] = input_df["Description"].map(lambda val: str(val).strip())
             input_df["_new_Amount"] = input_df.apply(amount_finder, axis=1)
             input_df["_new_Date"] = input_df["Date"].copy(deep=True)
             input_df["_new_InstitutionCategory"] = pd.Series([np.nan] * len(input_df))

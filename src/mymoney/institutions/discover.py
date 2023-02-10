@@ -45,7 +45,7 @@ class Discover(institution_base.Institution):
                 else:
                     return "consider"
 
-            input_df["_new_Description"] = input_df["Description"].copy(deep=True)
+            input_df["_new_Description"] = input_df["Description"].map(lambda val: str(val).strip())
             input_df["_new_Amount"] = -input_df["Amount"]
             input_df["_new_Date"] = input_df["Trans. Date"].copy(deep=True)
             input_df["_new_InstitutionCategory"] = input_df["Category"].copy(deep=True)

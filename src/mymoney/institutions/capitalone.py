@@ -55,7 +55,7 @@ class CapitalOne(institution_base.Institution):
                     return "consider"
 
 
-            input_df["_new_Description"] = input_df["Description"].copy(deep=True)
+            input_df["_new_Description"] = input_df["Description"].map(lambda val: str(val).strip())
             input_df["_new_Amount"] = input_df.apply(amount_finder, axis=1)
             input_df["_new_Date"] = input_df["Transaction Date"].copy(deep=True)
             input_df["_new_InstitutionCategory"] = input_df["Category"].copy(deep=True)

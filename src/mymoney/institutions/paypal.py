@@ -52,9 +52,11 @@ class PayPal(institution_base.Institution):
 
             def description_finder(row):
                 if pd.isna(row["Name"]):
-                    return str(row["Type"])
+                    out = str(row["Type"])
                 else:
-                    return f"{str(row['Name'])}: {row['Type']}"
+                    out = f"{str(row['Name'])}: {row['Type']}"
+
+                return out.strip()
 
             def amount_finder(val):
                 return float(str(val).replace(",", ""))

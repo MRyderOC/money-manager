@@ -47,16 +47,17 @@ class Venmo(institution_base.Institution):
             def description_finder(row):
                 row_type = row["Type"]
                 if row_type == "Standard Transfer":
-                    return f"transfer to {row['Destination']}"
+                    out = f"transfer to {row['Destination']}"
                 elif row_type == "Merchant Transaction":
-                    return row["To"]
+                    out = row["To"]
                 elif row_type == "Payment":
-                    return f"{row['From']} -> {row['To']}: {row['Note']}"
+                    out = f"{row['From']} -> {row['To']}: {row['Note']}"
                 elif row_type == "Charge":
-                    return f"{row['To']} -> {row['From']}: {row['Note']}"
+                    out = f"{row['To']} -> {row['From']}: {row['Note']}"
                 else:
-                    return f"Consider: {row['Note']}: {row['From']} -> {row['To']}. (Type: {row_type})"
-                
+                    out = f"Consider: {row['Note']}: {row['From']} -> {row['To']}. (Type: {row_type})"
+
+                return out.strip()
 
             input_df["_new_Description"] = input_df.apply(description_finder, axis=1)
             input_df["_new_Amount"] = input_df["Amount (total)"].map(amount_finder)
