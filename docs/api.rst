@@ -6,15 +6,15 @@ API
 analysis
 --------
 
-Expense
-```````
-.. automodule:: mymoney.analysis.expense
-    :members:
+.. Expense
+.. ```````
+.. .. automodule:: mymoney.analysis.expense
+..     :members:
 
-Trade
-`````
-.. automodule:: mymoney.analysis.trade
-    :members:
+.. Trade
+.. `````
+.. .. automodule:: mymoney.analysis.trade
+..     :members:
 
 
 core
@@ -71,12 +71,10 @@ Institutions
 utils
 -----
 
-.. module:: mymoney.utils
-
-Common
-``````
-.. automodule:: mymoney.utils.common
-    :members:
+.. Common
+.. ``````
+.. .. automodule:: mymoney.utils.common
+..     :members:
 
 Data Validation
 ```````````````
