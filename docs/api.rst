@@ -76,7 +76,7 @@ utils
 .. .. automodule:: mymoney.utils.common
 ..     :members:
 
-Data Validation
-```````````````
-.. automodule:: mymoney.utils.data_validation
-    :members:
+.. Data Validation
+.. ```````````````
+.. .. automodule:: mymoney.utils.data_validation
+..     :members:
