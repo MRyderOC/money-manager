@@ -64,8 +64,8 @@ class SeriesValidation:
 
     def _check_dtype(self, dtype: str) -> bool:
         """For a given Series specifies if elements have dtypes.
+
         Args:
-            ser (pd.Series): Any Series
             dtype (str): Accepted values: [
                     'object', 'bool', ('string', 'str'),
                 # number related
@@ -141,8 +141,8 @@ class SeriesValidation:
         """Check whether the Series contains `values`.
 
         Args:
-            values (List):
-                A list of values to check for in the Series.
+            values:
+                Values to check for in the Series.
             mode (str):
                 Accepted values: [
                     'range' -> values of the Series are in the range of `values`,
@@ -240,6 +240,7 @@ class SeriesValidation:
         raises: bool = False,
     ):
         """Specifies if the elements of the Series have `dtypes`.
+
         Args:
             dtype (str):
                 Accepted values: [
@@ -303,7 +304,7 @@ class SeriesValidation:
 
         Args:
             values (List):
-                A list of values to check for in the Series.
+                Values to check for in the Series.
             mode (str):
                 Accepted values: [
                     'range' -> values of the Series are in the range of `values`,
@@ -359,6 +360,7 @@ class SeriesValidation:
                 )
 
             self._raise_or_log(msg, logs, raises)
+
 
 
 class DataFrameValidation:
@@ -472,7 +474,7 @@ class DataFrameValidation:
         """Same as `has_schema`.
 
         Args:
-            schema (Dict[str, str])
+            schema (Dict[str, str]):
                 Mapping of columns to dtypes as string.
             logs (bool):
                 Whether to log the results if something went wrong.
@@ -489,7 +491,7 @@ class DataFrameValidation:
         logs: bool = True,
         raises: bool = False,
     ):
-        """Check whether the DataFrame columns contains specific.
+        """Check whether the DataFrame columns contains specific values.
 
         Args:
             col_vals_dict (Dict[str, Dict[str, Any]]):
