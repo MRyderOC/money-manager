@@ -82,7 +82,7 @@ class Service():
         ...
 
 
-    def create_sanity_data(self, input_df: pd.DataFrame, account_name: str):
+    def create_sanity_data(self, input_df: pd.DataFrame, account_name: str) -> pd.DataFrame:
         """docs here!"""
         return self._data_validation(self._cleaning(input_df, account_name))
 
@@ -94,9 +94,9 @@ class Institution():
 
     _USDs = ["USD", "USDC", "USDT"]
     _new_expense_columns = [
-        "Description", "Amount", "Date",
+        "Description", "Amount", "Date", "Institution",
         "InstitutionCategory", "MyCategory",
-        "Institution", "IsTransfer", "IsCompatible"
+        "IsTransfer", "IsValid",
     ]
     _new_trade_columns = [
         "Datetime",
@@ -108,27 +108,6 @@ class Institution():
         "Asset Type",
         "USD Amount",
     ]
-
-
-    class CreditService(Service):
-        """Prototype class for Credit Service."""
-        _service_type = ServiceType("credit")
-        ...
-
-    class DebitService(Service):
-        """Prototype class for Debit Service."""
-        _service_type = ServiceType("debit")
-        ...
-
-    class ThirdPartyService(Service):
-        """Prototype class for ThirdParty Service."""
-        _service_type = ServiceType("3rdparty")
-        ...
-
-    class ExchangeService(Service):
-        """Prototype class for Exchange Service."""
-        _service_type = ServiceType("exchange")
-        ...
 
 
     def __init__(self) -> None:
@@ -186,3 +165,24 @@ class Institution():
             output_df=out_df,
             out_type=out_type,
         )
+
+
+    class CreditService(Service):
+        """Prototype class for Credit Service."""
+        _service_type = ServiceType("credit")
+        ...
+
+    class DebitService(Service):
+        """Prototype class for Debit Service."""
+        _service_type = ServiceType("debit")
+        ...
+
+    class ThirdPartyService(Service):
+        """Prototype class for ThirdParty Service."""
+        _service_type = ServiceType("3rdparty")
+        ...
+
+    class ExchangeService(Service):
+        """Prototype class for Exchange Service."""
+        _service_type = ServiceType("exchange")
+        ...
