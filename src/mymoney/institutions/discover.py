@@ -24,13 +24,22 @@ class Discover(institution_base.Institution):
 
 
     class CreditService(institution_base.Institution.CreditService):
-        """docs here!"""
+        """A class for Credit Service."""
 
-
-        def _cleaning(
+        def _csv_cleaning(
             self, input_df: pd.DataFrame, account_name: str
         ) -> pd.DataFrame:
-            """docs here!"""
+            """A method for cleaning process of CSV files for this service.
+
+            Args:
+                input_df (pd.DataFrame):
+                    The input DataFrame.
+                account_name (str):
+                    The name of the account associated with this service.
+
+            Returns:
+                The same DataFrame with new columns for cleaned data.
+            """
 
             def is_transfer_finder(row):
                 try:
