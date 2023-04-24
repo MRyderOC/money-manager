@@ -23,13 +23,22 @@ class Venmo(institution_base.Institution):
 
 
     class ThirdPartyService(institution_base.Institution.ThirdPartyService):
-        """docs here!"""
+        """A class for ThirdParty Service."""
 
-
-        def _cleaning(
+        def _csv_cleaning(
             self, input_df: pd.DataFrame, account_name: str
         ) -> pd.DataFrame:
-            """A class for Venmo institution's data cleaning functions."""
+            """A method for cleaning process of CSV files for this service.
+
+            Args:
+                input_df (pd.DataFrame):
+                    The input DataFrame.
+                account_name (str):
+                    The name of the account associated with this service.
+
+            Returns:
+                The same DataFrame with new columns for cleaned data.
+            """
 
             def is_transfer_finder(val):
                 if val == "Standard Transfer":

@@ -78,7 +78,7 @@ class Service:
     def _csv_cleaning(
             self, input_df: pd.DataFrame, account_name: str
     ) -> pd.DataFrame:
-        """Prototype class for cleaning process of CSV files for this service.
+        """Prototype method for cleaning process of CSV files for this service.
         Subclasses should implement this method.
 
         Args:
