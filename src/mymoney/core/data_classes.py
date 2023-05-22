@@ -1,6 +1,6 @@
 import logging
 import dataclasses
-from typing import Dict, Any
+from typing import Any
 
 import pandas as pd
 
@@ -37,7 +37,6 @@ class InstData:
     output_df: pd.DataFrame = None
     out_type: str = None
 
-
     def __init__(
         self,
         source: str | Any,
@@ -56,15 +55,15 @@ class InstData:
 
         self.create_output_data()
 
-
     def _generate_file_name(self) -> str:
         """Generate a unique file name in the following format:
-        ``<INSTITUTION NAME> - <SERVICE NAME> - <ACCOUNT NAME> (<LAST DATE APPEARED IN THE DATA>)``."""
+        ``<INSTITUTION NAME> - <SERVICE NAME> -
+            <ACCOUNT NAME> (<LAST DATE APPEARED IN THE DATA>)``."""
         last_date = str(self.output_df["Date"].max().date())
         return (
-            f"{self.institution_name} - {self.service_name} - {self.account_name} ({last_date})"
+            f"{self.institution_name} - {self.service_name} -"
+            f" {self.account_name} ({last_date})"
         )
-
 
     def _institution_executer(self) -> pd.DataFrame:
         """Returns the `sanity_df` DataFrame. Basically this method creates
@@ -80,7 +79,7 @@ class InstData:
             case "venmo": inst_obj = venmo.Venmo()
             case _:
                 raise ValueError(
-                    f"Institution {self.institution_name} is not supported yet."
+                    f"Institution {self.institution_name} is not supported."
                     "\nYou can file an issue and provide more information"
                     " to add the institution."
                 )
@@ -91,7 +90,7 @@ class InstData:
         )
 
     def _output_df_creator(self, sanity_df: pd.DataFrame) -> pd.DataFrame:
-        """Creates a DataFrame aligned with `output_df` schema from `sanity_df`.
+        """Creates a DataFrame aligned with `output_df` schema from `sanity_df`
 
         Args:
             sanity_df (pd.DataFrame):
@@ -111,7 +110,9 @@ class InstData:
             if not col.startswith("_new_")
         ]
 
-        return sanity_df.drop(columns=old_columns).rename(columns=new_columns_name_map)
+        return sanity_df.drop(columns=old_columns).rename(
+            columns=new_columns_name_map
+        )
 
     def _set_out_type(self):
         """Set the `out_type` based on `service_name`."""

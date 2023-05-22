@@ -27,7 +27,6 @@ class DataReader:
             files("mymoney").joinpath("meta_data.json").read_text()
         )
 
-
     def _column_name_checker(
         self, input_df: pd.DataFrame, columns: List[str]
     ):
@@ -109,14 +108,16 @@ class DataReader:
                 read_flag = False
                 error_msg = ""
                 try:
-                    input_df = pd.read_csv(filepath_or_buffer=path, **read_args)
+                    input_df = pd.read_csv(
+                        filepath_or_buffer=path, **read_args)
                     self._column_name_checker(input_df, cols)
                     read_flag = True
                 except Exception as err:
                     error_msg = err
                     if institution == "wellsfargo":
                         if self._is_wellsfargo(pd.read_csv(path)):
-                            input_df = pd.read_csv(filepath_or_buffer=path, **read_args)
+                            input_df = pd.read_csv(
+                                filepath_or_buffer=path, **read_args)
                             read_flag = True
 
                 if read_flag:
@@ -131,7 +132,8 @@ class DataReader:
                     )
                 else:
                     if logs:
-                        logging.warning(f"An error occurred for {name}: {error_msg}")
+                        logging.warning(
+                            f"An error occurred for {name}: {error_msg}")
                     continue
 
         # Log a warning if data can not be read
