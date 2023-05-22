@@ -12,7 +12,7 @@ def raise_or_log(
     message: str,
     logs: bool = True,
     raises: bool = False,
-    exception_type = Exception,
+    exception_type=Exception,
 ):
     """Raise an exception or log a message.
 
