@@ -1,7 +1,7 @@
 import re
 import logging
 
-import numpy as np
+import numpy as np  # noqa: F401
 import pandas as pd
 
 from mymoney.institutions import institution_base
@@ -22,7 +22,6 @@ class AmEx(institution_base.Institution):
     def __init__(self) -> None:
         super().__init__()
 
-
     class CreditService(institution_base.Institution.CreditService):
         """A class for Credit Service."""
 
@@ -40,13 +39,21 @@ class AmEx(institution_base.Institution):
             Returns:
                 The same DataFrame with new columns for cleaned data.
             """
-            # row["_new_Description"] == "YOUR CASH REWARD/REFUND IS": for cash back payments
-            # row["Extended Details"].startswith("Amex Offer Credit"): for offer redeems
+            # row["_new_Description"] == "YOUR CASH REWARD/REFUND IS":
+            #     for cash back payments
+            # row["Extended Details"].startswith("Amex Offer Credit"):
+            #     for offer redeems
 
             def is_transfer_finder(row):
                 try:
-                    regex_flag_paypal = re.search(r"PAYPAL", str(row["_new_Description"]))
-                    regex_flag_payment = re.search(r"\w* PAYMENT - THANK YOU", str(row["_new_Description"]))
+                    regex_flag_paypal = re.search(
+                        r"PAYPAL",
+                        str(row["_new_Description"])
+                    )
+                    regex_flag_payment = re.search(
+                        r"\w* PAYMENT - THANK YOU",
+                        str(row["_new_Description"])
+                    )
                 except Exception:
                     return "consider"
 
@@ -57,12 +64,20 @@ class AmEx(institution_base.Institution):
                 else:
                     return "consider"
 
-            input_df["_new_Description"] = input_df["Description"].map(lambda val: str(val).strip())
+            input_df["_new_Description"] = input_df["Description"].map(
+                lambda val: str(val).strip()
+            )
             input_df["_new_Amount"] = -input_df["Amount"]
             input_df["_new_Date"] = input_df["Date"].copy(deep=True)
-            input_df["_new_InstitutionCategory"] = input_df["Category"].copy(deep=True)
+            input_df["_new_InstitutionCategory"] = input_df["Category"].copy(
+                deep=True
+            )
             input_df["_new_MyCategory"] = input_df["Category"].copy(deep=True)
-            input_df["_new_Institution"] = pd.Series([f"AmEx {account_name}"] * len(input_df))
-            input_df["_new_IsTransfer"] = input_df.apply(is_transfer_finder, axis=1)
+            input_df["_new_Institution"] = pd.Series(
+                [f"AmEx {account_name}"] * len(input_df)
+            )
+            input_df["_new_IsTransfer"] = input_df.apply(
+                is_transfer_finder, axis=1
+            )
 
             return input_df

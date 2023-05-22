@@ -41,10 +41,10 @@ class Service:
         md = inst_meta_data.get(self._service_type.value)
         if not md:
             raise Exception(
-                f"No `{self._service_type.value}` service available in inst_meta_data."
+                f"No `{self._service_type.value}`"
+                " service available in inst_meta_data."
             )
         self._this_meta_data = md
-
 
     def _data_validation(self, df: pd.DataFrame) -> pd.DataFrame:
         """Creates the `IsValid` column for the `df` based on the data
@@ -74,7 +74,6 @@ class Service:
 
         return df
 
-
     def _csv_cleaning(
             self, input_df: pd.DataFrame, account_name: str
     ) -> pd.DataFrame:
@@ -91,10 +90,10 @@ class Service:
             The same DataFrame with new columns for cleaned data.
 
         Raises:
-            NotImplementedError: If the subclass hasn't implemented this method.
+            NotImplementedError:
+                If the subclass hasn't implemented this method.
         """
         raise NotImplementedError("Subclass should implement this method!")
-
 
     def data_type_exec(
             self, data_type: DataType, table: pd.DataFrame, account_name: str
@@ -104,7 +103,8 @@ class Service:
 
         Args:
             data_type (DataType):
-                The type of input data. Refer to `DataType` for supported types.
+                The type of input data.
+                Refer to `DataType` for supported types.
             table (pd.DataFrame):
                 The input table as a DataFrame.
             account_name (str):
@@ -114,7 +114,9 @@ class Service:
             The same DataFrame with new columns for cleaned data.
         """
         match data_type:
-            case DataType.CSV: df = self._csv_cleaning(input_df=table, account_name=account_name)
+            case DataType.CSV: df = self._csv_cleaning(
+                    input_df=table, account_name=account_name
+            )
             case DataType.PDF: raise NotImplementedError("Not supported yet!")
             case DataType.ANY: raise NotImplementedError("Not supported yet!")
 
@@ -122,7 +124,8 @@ class Service:
 
 
 class Institution:
-    """Base class for institutions to do data transformation related operations."""
+    """Base class for institutions to do
+    data transformation related operations."""
 
     _this_institution_name = "base"
     _USDs = ["USD", "USDC", "USDT"]
@@ -132,7 +135,6 @@ class Institution:
             files("mymoney").joinpath("meta_data.json").read_text()
         )
         self._this_meta_data = self._meta_data.get(self._this_institution_name)
-
 
     def service_executer(
         self,
@@ -145,9 +147,11 @@ class Institution:
 
         Args:
             service_name (str):
-                The service of the input data. Refer to `ServiceType` for supported services.
+                The service of the input data.
+                Refer to `ServiceType` for supported services.
             data_type (DataType):
-                The type of the input data. Refer to `DataType` for supported types.
+                The type of the input data.
+                Refer to `DataType` for supported types.
             table (pd.DataFrame):
                 The input table as a DataFrame.
             account_name (str):
@@ -171,7 +175,6 @@ class Institution:
         return the_serv.data_type_exec(
             data_type=data_type, table=table, account_name=account_name
         )
-
 
     class CreditService(Service):
         """Prototype class for Credit Service."""

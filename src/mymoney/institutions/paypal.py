@@ -22,7 +22,6 @@ class PayPal(institution_base.Institution):
     def __init__(self) -> None:
         super().__init__()
 
-
     class ThirdPartyService(institution_base.Institution.ThirdPartyService):
         """A class for ThirdParty Service."""
 
@@ -54,7 +53,7 @@ class PayPal(institution_base.Institution):
                     return "redundant"
                 elif name_is_nan:
                     return "transfer"
-                elif not(name_is_nan or regex_flag_redundant):
+                elif not (name_is_nan or regex_flag_redundant):
                     return "expense"
                 else:
                     return "consider"
@@ -70,13 +69,20 @@ class PayPal(institution_base.Institution):
             def amount_finder(val):
                 return float(str(val).replace(",", ""))
 
-
-            input_df["_new_Description"] = input_df.apply(description_finder, axis=1)
+            input_df["_new_Description"] = input_df.apply(
+                description_finder, axis=1
+            )
             input_df["_new_Amount"] = input_df["Amount"].map(amount_finder)
             input_df["_new_Date"] = input_df["Date"].copy(deep=True)
-            input_df["_new_InstitutionCategory"] = pd.Series([np.nan] * len(input_df))
+            input_df["_new_InstitutionCategory"] = pd.Series(
+                [np.nan] * len(input_df)
+            )
             input_df["_new_MyCategory"] = pd.Series([np.nan] * len(input_df))
-            input_df["_new_Institution"] = pd.Series([f"PayPal {account_name}"] * len(input_df))
-            input_df["_new_IsTransfer"] = input_df.apply(is_transfer_finder, axis=1)
+            input_df["_new_Institution"] = pd.Series(
+                [f"PayPal {account_name}"] * len(input_df)
+            )
+            input_df["_new_IsTransfer"] = input_df.apply(
+                is_transfer_finder, axis=1
+            )
 
             return input_df

@@ -21,7 +21,6 @@ class Venmo(institution_base.Institution):
     def __init__(self) -> None:
         super().__init__()
 
-
     class ThirdPartyService(institution_base.Institution.ThirdPartyService):
         """A class for ThirdParty Service."""
 
@@ -64,16 +63,29 @@ class Venmo(institution_base.Institution):
                 elif row_type == "Charge":
                     out = f"{row['To']} -> {row['From']}: {row['Note']}"
                 else:
-                    out = f"Consider: {row['Note']}: {row['From']} -> {row['To']}. (Type: {row_type})"
+                    out = (
+                        f"Consider: {row['Note']}:"
+                        f" {row['From']} -> {row['To']}. (Type: {row_type})"
+                    )
 
                 return out.strip()
 
-            input_df["_new_Description"] = input_df.apply(description_finder, axis=1)
-            input_df["_new_Amount"] = input_df["Amount (total)"].map(amount_finder)
+            input_df["_new_Description"] = input_df.apply(
+                description_finder, axis=1
+            )
+            input_df["_new_Amount"] = input_df["Amount (total)"].map(
+                amount_finder
+            )
             input_df["_new_Date"] = input_df["Datetime"].copy(deep=True)
-            input_df["_new_InstitutionCategory"] = pd.Series([np.nan] * len(input_df))
+            input_df["_new_InstitutionCategory"] = pd.Series(
+                [np.nan] * len(input_df)
+            )
             input_df["_new_MyCategory"] = pd.Series([np.nan] * len(input_df))
-            input_df["_new_Institution"] = pd.Series([f"Venmo {account_name}"] * len(input_df))
-            input_df["_new_IsTransfer"] = input_df["Type"].map(is_transfer_finder)
+            input_df["_new_Institution"] = pd.Series(
+                [f"Venmo {account_name}"] * len(input_df)
+            )
+            input_df["_new_IsTransfer"] = input_df["Type"].map(
+                is_transfer_finder
+            )
 
             return input_df.dropna(subset=["_new_Date"])
