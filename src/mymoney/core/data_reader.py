@@ -114,27 +114,30 @@ class DataReader:
                     read_flag = True
                 except Exception as err:
                     error_msg = err
-                    if institution == "wellsfargo":
-                        if self._is_wellsfargo(pd.read_csv(path)):
-                            input_df = pd.read_csv(
-                                filepath_or_buffer=path, **read_args)
-                            read_flag = True
+                    if (
+                        institution == "wellsfargo"
+                        and self._is_wellsfargo(pd.read_csv(path))
+                    ):
+                        input_df = pd.read_csv(
+                            filepath_or_buffer=path, **read_args
+                        )
+                        read_flag = True
 
-                if read_flag:
-                    logging.info(f"Completed: {name} - {account_name}")
-                    return InstData(
-                        source=path,
-                        data_type=DataType.CSV,
-                        institution_name=institution,
-                        service_name=service,
-                        account_name=account_name,
-                        table=input_df,
-                    )
-                else:
+                if not read_flag:
                     if logs:
-                        logging.warning(
-                            f"An error occurred for {name}: {error_msg}")
+                        msg = f"An error occurred for {name}: {error_msg}"
+                        logging.warning(msg)
                     continue
+
+                logging.info(f"Completed: {name} - {account_name}")
+                return InstData(
+                    source=path,
+                    data_type=DataType.CSV,
+                    institution_name=institution,
+                    service_name=service,
+                    account_name=account_name,
+                    table=input_df,
+                )
 
         # Log a warning if data can not be read
         logging.warning(f"Couldn't read the data for {path}")
