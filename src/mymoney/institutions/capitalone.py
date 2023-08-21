@@ -71,6 +71,7 @@ class CapitalOne(institution_base.Institution):
                 else:
                     return "consider"
 
+            df_len = len(input_df)
             input_df["_new_Description"] = input_df["Description"].map(
                 lambda val: str(val).strip()
             )
@@ -82,9 +83,8 @@ class CapitalOne(institution_base.Institution):
                 deep=True
             )
             input_df["_new_MyCategory"] = input_df["Category"].copy(deep=True)
-            input_df["_new_Institution"] = input_df["Card No."].map(
-                institution_finder
-            )
+            input_df["_new_Institution"] = pd.Series(["Capital One"] * df_len)
+            input_df["_new_AccountName"] = input_df["Card No."].copy(deep=True)
             input_df["_new_IsTransfer"] = input_df.apply(
                 is_transfer_finder, axis=1
             )

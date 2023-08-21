@@ -115,7 +115,7 @@ class Service:
         """
         match data_type:
             case DataType.CSV: df = self._csv_cleaning(
-                    input_df=table, account_name=account_name
+                input_df=table, account_name=account_name
             )
             case DataType.PDF: raise NotImplementedError("Not supported yet!")
             case DataType.ANY: raise NotImplementedError("Not supported yet!")
@@ -162,17 +162,17 @@ class Institution:
         """
         md = self._this_meta_data
         match service_name:
-            case "debit": the_serv = self.DebitService(md)
-            case "credit": the_serv = self.CreditService(md)
-            case "3rdparty": the_serv = self.ThirdPartyService(md)
-            case "exchange": the_serv = self.ExchangeService(md)
+            case "debit": the_service = self.DebitService(md)
+            case "credit": the_service = self.CreditService(md)
+            case "3rdparty": the_service = self.ThirdPartyService(md)
+            case "exchange": the_service = self.ExchangeService(md)
             case _:
                 raise ValueError(
                     "service_name should be one of the following:"
                     " ['debit', 'credit', '3rdparty', 'exchange']."
                 )
 
-        return the_serv.data_type_exec(
+        return the_service.data_type_exec(
             data_type=data_type, table=table, account_name=account_name
         )
 

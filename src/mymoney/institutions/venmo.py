@@ -70,6 +70,7 @@ class Venmo(institution_base.Institution):
 
                 return out.strip()
 
+            df_len = len(input_df)
             input_df["_new_Description"] = input_df.apply(
                 description_finder, axis=1
             )
@@ -81,9 +82,8 @@ class Venmo(institution_base.Institution):
                 [np.nan] * len(input_df)
             )
             input_df["_new_MyCategory"] = pd.Series([np.nan] * len(input_df))
-            input_df["_new_Institution"] = pd.Series(
-                [f"Venmo {account_name}"] * len(input_df)
-            )
+            input_df["_new_Institution"] = pd.Series(["Venmo"] * df_len)
+            input_df["_new_AccountName"] = pd.Series([account_name] * df_len)
             input_df["_new_IsTransfer"] = input_df["Type"].map(
                 is_transfer_finder
             )

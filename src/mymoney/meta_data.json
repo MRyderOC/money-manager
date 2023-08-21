@@ -2,7 +2,8 @@
     "base": {
         "expense": {
             "columns": [
-                "Description", "Amount", "Date", "Institution",
+                "Description", "Amount", "Date",
+                "Institution", "AccountName",
                 "InstitutionCategory", "MyCategory",
                 "IsTransfer", "IsValid"
             ],

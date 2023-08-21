@@ -69,6 +69,7 @@ class PayPal(institution_base.Institution):
             def amount_finder(val):
                 return float(str(val).replace(",", ""))
 
+            df_len = len(input_df)
             input_df["_new_Description"] = input_df.apply(
                 description_finder, axis=1
             )
@@ -78,9 +79,8 @@ class PayPal(institution_base.Institution):
                 [np.nan] * len(input_df)
             )
             input_df["_new_MyCategory"] = pd.Series([np.nan] * len(input_df))
-            input_df["_new_Institution"] = pd.Series(
-                [f"PayPal {account_name}"] * len(input_df)
-            )
+            input_df["_new_Institution"] = pd.Series(["PayPal"] * df_len)
+            input_df["_new_AccountName"] = pd.Series([account_name] * df_len)
             input_df["_new_IsTransfer"] = input_df.apply(
                 is_transfer_finder, axis=1
             )
