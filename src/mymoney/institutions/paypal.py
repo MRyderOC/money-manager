@@ -69,20 +69,14 @@ class PayPal(institution_base.Institution):
             def amount_finder(val):
                 return float(str(val).replace(",", ""))
 
-            df_len = len(input_df)
-            input_df["_new_Description"] = input_df.apply(
-                description_finder, axis=1
-            )
+            input_df["_new_Description"] = input_df.apply(description_finder, axis=1)  # noqa: E501
             input_df["_new_Amount"] = input_df["Amount"].map(amount_finder)
             input_df["_new_Date"] = input_df["Date"].copy(deep=True)
-            input_df["_new_InstitutionCategory"] = pd.Series(
-                [np.nan] * len(input_df)
-            )
-            input_df["_new_MyCategory"] = pd.Series([np.nan] * len(input_df))
-            input_df["_new_Institution"] = pd.Series(["PayPal"] * df_len)
-            input_df["_new_AccountName"] = pd.Series([account_name] * df_len)
-            input_df["_new_IsTransfer"] = input_df.apply(
-                is_transfer_finder, axis=1
-            )
+            input_df["_new_InstitutionCategory"] = np.nan
+            input_df["_new_MyCategory"] = np.nan
+            input_df["_new_Institution"] = "PayPal"
+            input_df["_new_AccountName"] = account_name
+            input_df["_new_Service"] = self._service_type.value
+            input_df["_new_IsTransfer"] = input_df.apply(is_transfer_finder, axis=1)  # noqa: E501
 
             return input_df

@@ -43,9 +43,6 @@ class CapitalOne(institution_base.Institution):
             #     for cash back payments
             # row["_new_Description"] == "AU BONUS": for bonuses
 
-            def institution_finder(val):
-                return "Capital One " + str(val)
-
             def amount_finder(row):
                 return (
                     row["Credit"] if np.isnan(row["Debit"]) else -row["Debit"]
@@ -71,22 +68,14 @@ class CapitalOne(institution_base.Institution):
                 else:
                     return "consider"
 
-            df_len = len(input_df)
-            input_df["_new_Description"] = input_df["Description"].map(
-                lambda val: str(val).strip()
-            )
+            input_df["_new_Description"] = input_df["Description"].map(lambda val: str(val).strip())  # noqa: E501
             input_df["_new_Amount"] = input_df.apply(amount_finder, axis=1)
-            input_df["_new_Date"] = input_df["Transaction Date"].copy(
-                deep=True
-            )
-            input_df["_new_InstitutionCategory"] = input_df["Category"].copy(
-                deep=True
-            )
+            input_df["_new_Date"] = input_df["Transaction Date"].copy(deep=True)  # noqa: E501
+            input_df["_new_InstitutionCategory"] = input_df["Category"].copy(deep=True)  # noqa: E501
             input_df["_new_MyCategory"] = input_df["Category"].copy(deep=True)
-            input_df["_new_Institution"] = pd.Series(["Capital One"] * df_len)
-            input_df["_new_AccountName"] = input_df["Card No."].copy(deep=True)
-            input_df["_new_IsTransfer"] = input_df.apply(
-                is_transfer_finder, axis=1
-            )
+            input_df["_new_Institution"] = "Capital One"
+            input_df["_new_AccountName"] = input_df["Card No."].copy(deep=True)  # noqa: E501
+            input_df["_new_Service"] = self._service_type.value
+            input_df["_new_IsTransfer"] = input_df.apply(is_transfer_finder, axis=1)  # noqa: E501
 
             return input_df

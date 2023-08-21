@@ -47,22 +47,14 @@ class Chase(institution_base.Institution):
                 else:
                     return "consider"
 
-            df_len = len(input_df)
-            input_df["_new_Description"] = input_df["Description"].map(
-                lambda val: str(val).strip()
-            )
+            input_df["_new_Description"] = input_df["Description"].map(lambda val: str(val).strip())  # noqa: E501
             input_df["_new_Amount"] = input_df["Amount"].copy(deep=True)
-            input_df["_new_Date"] = input_df["Transaction Date"].copy(
-                deep=True
-            )
-            input_df["_new_InstitutionCategory"] = input_df["Category"].copy(
-                deep=True
-            )
+            input_df["_new_Date"] = input_df["Transaction Date"].copy(deep=True)  # noqa: E501
+            input_df["_new_InstitutionCategory"] = input_df["Category"].copy(deep=True)  # noqa: E501
             input_df["_new_MyCategory"] = input_df["Category"].copy(deep=True)
-            input_df["_new_Institution"] = pd.Series(["Chase"] * df_len)
-            input_df["_new_AccountName"] = pd.Series([account_name] * df_len)
-            input_df["_new_IsTransfer"] = input_df["Type"].map(
-                is_transfer_finder
-            )
+            input_df["_new_Institution"] = "Chase"
+            input_df["_new_AccountName"] = account_name
+            input_df["_new_Service"] = self._service_type.value
+            input_df["_new_IsTransfer"] = input_df["Type"].map(is_transfer_finder)  # noqa: E501
 
             return input_df
