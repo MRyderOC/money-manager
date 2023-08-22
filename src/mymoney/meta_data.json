@@ -5,7 +5,7 @@
                 "Description", "Amount", "Date",
                 "Institution", "AccountName",
                 "InstitutionCategory", "MyCategory",
-                "IsTransfer", "IsValid"
+                "IsTransfer", "IsValid", "Service"
             ],
             "read_args": {
                 "header": 0,
@@ -89,6 +89,33 @@
                     "Card No.": {"values": "^\\d{4}$", "mode": "regex"},
                     "Debit": {"values": "^\\d+[.]\\d{1,2}$", "mode": "regex", "na_action": "ignore"},
                     "Credit": {"values": "^\\d+[.]\\d{1,2}$", "mode": "regex", "na_action": "ignore"}
+                }
+            }
+        },
+        "debit": {
+            "columns": [
+                "Account Number",
+                "Transaction Date",
+                "Transaction Amount",
+                "Transaction Type",
+                "Transaction Description",
+                "Balance"
+            ],
+            "read_args": {
+                "header": 0,
+                "parse_dates": ["Transaction Date"],
+                "names": null
+            },
+            "validation_data": {
+                "schema": {
+                    "Account Number": "int",
+                    "Transaction Date": "datetime64_ns",
+                    "Transaction Amount": "float",
+                    "Balance": "float"
+                },
+                "column_values": {
+                    "Account Number": {"values": "^\\d{4}$", "mode": "regex"},
+                    "Transaction Type": {"values": ["Credit", "Debit"], "mode": "subset"}
                 }
             }
         }
