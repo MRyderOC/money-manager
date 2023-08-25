@@ -82,7 +82,9 @@ class DataReader:
             return True
         return False
 
-    def read_csv(self, path: str, logs: bool = False) -> InstData:
+    def read_csv(
+            self, path: str, account_name: str = None, logs: bool = False
+    ) -> InstData:
         """Read the data from `path` and returns a InstData.
 
         Args:
@@ -102,7 +104,8 @@ class DataReader:
                 name = f"{institution}/{service}"
                 cols = self._meta_data[institution][service]["columns"]
                 read_args = self._meta_data[institution][service]["read_args"]
-                account_name = os.path.basename(path).split(".")[0]
+                if account_name is None:
+                    account_name = os.path.basename(path).split(".")[0]
 
                 # Read the data
                 read_flag = False
@@ -144,8 +147,10 @@ class DataReader:
 
     def t_read_csv(self, folder_path: str) -> List[InstData]:
         """Traverse `folder_path` and returns a list that contains
-        InstData for each csv file in the folder_path.
-        Note: This function does not traverse inner folders.
+        InstData for each csv file in the `folder_path`. This method should be
+        used to traverse at most one level deep. If there is a folder
+        inside `folder_path`, the name of the that folder will be considered
+        as the account_name for the csv files in that folder.
 
         Args:
             folder_path (str):
@@ -156,16 +161,20 @@ class DataReader:
         """
         out_list = []
 
-        for dirname, _, filenames in os.walk(folder_path):
-            if dirname != folder_path:
-                continue
+        for dirpath, _, filenames in os.walk(folder_path):
+            # Find the account_name if needed
+            account_name = None
+            if dirpath != folder_path:
+                account_name = os.path.basename(dirpath)
 
             for filename in filenames:
                 if not self._path_is_csv_like(filename):
                     continue
 
-                out_list.append(
-                    self.read_csv(os.path.join(dirname, filename))
+                read_data = self.read_csv(
+                    os.path.join(dirpath, filename), account_name
                 )
+                if read_data:
+                    out_list.append(read_data)
 
         return out_list
