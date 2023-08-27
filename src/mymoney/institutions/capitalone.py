@@ -81,7 +81,7 @@ class CapitalOne(institution_base.Institution):
             return input_df
 
     class DebitService(institution_base.Institution.DebitService):
-        """A class for Credit Service."""
+        """A class for Debit Service."""
 
         def _csv_cleaning(
             self, input_df: pd.DataFrame, account_name: str
@@ -101,9 +101,13 @@ class CapitalOne(institution_base.Institution):
             def is_transfer_finder(row):
                 try:
                     regex_flag = re.search(
-                        r"VENMO|DISCOVER|AMEX|WELLS FARGO|PAYPAL|CITI CARD|"
-                        r"CAPITAL ONE [\w\s]*PMT|SOFI [\w\s\.]* CARD PAYMT|"
-                        r"360 Checking",
+                        r"VENMO|DISCOVER|AMEX|PAYPAL|"
+                        r"CHASE CREDIT CRD AUTOPAY|SAMS CLUB PAYMENT|"
+                        r"WELLS FARGO|WF Credit Card AUTO PAY|"
+                        r"CITI CARD|CITI AUTOPAY PAYMENT|"
+                        r"SOFI [\w\s\.]* CARD PAYMT|SoFi Bank TRANSFER|"
+                        r"CAPITAL ONE [\w\s]*PMT|"
+                        r"360 Checking|360 Performance Savings",
                         str(row["_new_Description"])
                     )
                 except Exception:
