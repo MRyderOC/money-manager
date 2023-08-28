@@ -101,8 +101,8 @@ class CapitalOne(institution_base.Institution):
             def is_transfer_finder(row):
                 try:
                     regex_flag = re.search(
-                        r"VENMO|DISCOVER|AMEX|PAYPAL|"
-                        r"CHASE CREDIT CRD AUTOPAY|SAMS CLUB PAYMENT|"
+                        r"VENMO|DISCOVER|AMEX|PAYPAL|SAMS CLUB PAYMENT|"
+                        r"CHASE CREDIT CRD AUTOPAY|CHASE CREDIT CRD EPAY|"
                         r"WELLS FARGO|WF Credit Card AUTO PAY|"
                         r"CITI CARD|CITI AUTOPAY PAYMENT|"
                         r"SOFI [\w\s\.]* CARD PAYMT|SoFi Bank TRANSFER|"
