@@ -115,7 +115,7 @@
                 },
                 "column_values": {
                     "Account Number": {"values": "^\\d{4}$", "mode": "regex"},
-                    "Transaction Type": {"values": ["Credit", "Debit"], "mode": "subset"}
+                    "Transaction Type": {"values": ["Credit", "Debit"], "mode": "superset"}
                 }
             }
         }
