@@ -43,7 +43,7 @@ class Discover(institution_base.Institution):
             def is_transfer_finder(row):
                 try:
                     regex_flag = re.search(
-                        r"PAYPAL",
+                        r"PAYPAL|DIRECTPAY",
                         str(row["_new_Description"])
                     )
                 except Exception:
