@@ -270,5 +270,47 @@
                 }
             }
         }
+    },
+    "wellsfargo": {
+        "credit": {
+            "columns": [],
+            "read_args": {
+                "parse_dates": ["Date"],
+                "names": ["Date", "Amount", "x", "y", "Description"]
+            },
+            "validation_data": {
+                "schema": {
+                    "Amount": "float",
+                    "Date": "datetime",
+                    "IsValid": "bool"
+                },
+                "column_values": {
+                    "Amount": {"values": "^-?\\d+[.]\\d{1,2}$", "mode": "regex"},
+                    "IsTransfer": {"values": ["expense", "transfer", "consider", "redundant"], "mode": "superset"},
+                    "IsValid": {"values": [true, false], "mode": "equal"},
+                    "Service": {"values": ["debit", "credit", "3rdparty"], "mode": "equal"}
+                }
+            }
+        },
+        "debit": {
+            "columns": [],
+            "read_args": {
+                "parse_dates": ["Date"],
+                "names": ["Date", "Amount", "x", "y", "Description"]
+            },
+            "validation_data": {
+                "schema": {
+                    "Amount": "float",
+                    "Date": "datetime",
+                    "IsValid": "bool"
+                },
+                "column_values": {
+                    "Amount": {"values": "^-?\\d+[.]\\d{1,2}$", "mode": "regex"},
+                    "IsTransfer": {"values": ["expense", "transfer", "consider", "redundant"], "mode": "superset"},
+                    "IsValid": {"values": [true, false], "mode": "equal"},
+                    "Service": {"values": ["debit", "credit", "3rdparty"], "mode": "equal"}
+                }
+            }
+        }
     }
 }

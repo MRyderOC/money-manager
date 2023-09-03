@@ -11,6 +11,7 @@ from mymoney.institutions import citi
 from mymoney.institutions import discover
 from mymoney.institutions import paypal
 from mymoney.institutions import venmo
+from mymoney.institutions import wellsfargo
 
 
 logging.basicConfig(
@@ -57,8 +58,7 @@ class InstData:
 
     def _generate_file_name(self) -> str:
         """Generate a unique file name in the following format:
-        ``<INSTITUTION NAME> - <SERVICE NAME> -
-            <ACCOUNT NAME> (<LAST DATE APPEARED IN THE DATA>)``."""
+        ``<INSTITUTION NAME> - <SERVICE NAME> - <ACCOUNT NAME> (<LAST DATE APPEARED IN THE TABLE>)``."""  # noqa: E501
         last_date = str(self.output_df["Date"].max().date())
         return (
             f"{self.institution_name} - {self.service_name} -"
@@ -77,9 +77,10 @@ class InstData:
             case "discover": inst_obj = discover.Discover()
             case "paypal": inst_obj = paypal.PayPal()
             case "venmo": inst_obj = venmo.Venmo()
+            case "wellsfargo": inst_obj = wellsfargo.WellsFargo()
             case _:
                 raise ValueError(
-                    f"Institution {self.institution_name} is not supported."
+                    f"Institution `{self.institution_name}` is not supported."
                     "\nYou can file an issue and provide more information"
                     " to add the institution."
                 )
