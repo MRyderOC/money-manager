@@ -1,7 +1,7 @@
 import os
 import json
 import logging
-from typing import List
+from typing import List, Dict, Any
 
 import pandas as pd
 from importlib_resources import files
@@ -46,27 +46,6 @@ class DataReader:
                 "DataFrame columns are not matched with `columns`."
             )
 
-    def _is_wellsfargo(self, input_df: pd.DataFrame) -> bool:
-        """Check whether the `input_df` is a WellsFargo DataFrame.
-
-        Args:
-            input_df (pd.DataFrame):
-                The input DataFrame.
-
-        Returns:
-            True if `input_df` is from WellsFargo institution.
-        """
-
-        check_wellsfargo = (
-            "Unnamed: 3" in input_df.columns and "*" in input_df.columns,
-            (input_df["Unnamed: 3"].isna()).all(),
-            (input_df["*"] == "*").all(),
-        )
-        if not all(check_wellsfargo):
-            return False
-
-        return True
-
     def _path_is_csv_like(self, path: str) -> bool:
         """Check whether the `path` is a path to csv file.
 
@@ -82,6 +61,65 @@ class DataReader:
             return True
         return False
 
+    def _read_wellsfargo_csv(
+            self, path: str, account_name: str, read_args: Dict[str, Any]
+    ) -> InstData:
+        """Read the CSV data from `path` and returns a InstData. This method
+        is specialized for WellsFargo CSV files since they need special care.
+
+        Args:
+            path (str):
+                The path to read the csv file from.
+            account_name (str):
+                The name of the account to be used.
+                If it's None the name of the file will be used.
+            read_args (Dict[str, Any]):
+                Read arguments for pd.read_csv.
+
+        Returns:
+            An InstData object.
+        """
+        def is_wellsfargo(input_df: pd.DataFrame) -> bool:
+            """Check whether the `input_df` is a WellsFargo DataFrame.
+
+            Args:
+                input_df (pd.DataFrame):
+                    The input DataFrame.
+
+            Returns:
+                True if `input_df` is from WellsFargo institution.
+            """
+
+            check_wellsfargo = (
+                "Unnamed: 3" in input_df.columns and "*" in input_df.columns,
+                (input_df["Unnamed: 3"].isna()).all(),
+                (input_df["*"] == "*").all(),
+            )
+            if not all(check_wellsfargo):
+                return False
+
+            return True
+
+        if not is_wellsfargo(pd.read_csv(path)):
+            return None
+
+        input_df = pd.read_csv(filepath_or_buffer=path, **read_args)
+
+        wf_service_cond = any(
+            input_df["Description"].str.contains(r"PAYMENT\s?-? THANK")
+        )
+        wf_service = "credit" if wf_service_cond else "debit"
+
+        logging.info(f"Completed: wellsfargo/{wf_service} - {account_name}")
+        return InstData(
+            source=path,
+            data_type=DataType.CSV,
+            institution_name="wellsfargo",
+            service_name=wf_service,
+            account_name=account_name,
+            table=input_df,
+        )
+
     def read_csv(
             self, path: str, account_name: str = None, logs: bool = False
     ) -> InstData:
@@ -90,6 +128,9 @@ class DataReader:
         Args:
             path (str):
                 The path to read the csv file from.
+            account_name (str):
+                The name of the account to be used.
+                If it's None the name of the file will be used.
             logs (bool):
                 Show the logs for failed attempt of reading.
 
@@ -117,14 +158,13 @@ class DataReader:
                     read_flag = True
                 except Exception as err:
                     error_msg = err
-                    if (
-                        institution == "wellsfargo"
-                        and self._is_wellsfargo(pd.read_csv(path))
-                    ):
-                        input_df = pd.read_csv(
-                            filepath_or_buffer=path, **read_args
+                    if institution == "wellsfargo":
+                        wf_inst = self._read_wellsfargo_csv(
+                            path=path, account_name=account_name,
+                            read_args=read_args
                         )
-                        read_flag = True
+                        if wf_inst is not None:
+                            return wf_inst
 
                 if not read_flag:
                     if logs:
