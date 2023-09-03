@@ -16,12 +16,13 @@
                 "schema": {
                     "Amount": "float",
                     "Date": "datetime",
-                    "isValid": "bool"
+                    "IsValid": "bool"
                 },
                 "column_values": {
                     "Amount": {"values": "^-?\\d+[.]\\d{1,2}$", "mode": "regex"},
                     "IsTransfer": {"values": ["expense", "transfer", "consider", "redundant"], "mode": "superset"},
-                    "IsValid": {"values": [true, false], "mode": "equal"}
+                    "IsValid": {"values": [true, false], "mode": "equal"},
+                    "Service": {"values": ["debit", "credit", "3rdparty"], "mode": "equal"}
                 }
             }
         }
