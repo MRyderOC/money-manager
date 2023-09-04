@@ -121,6 +121,40 @@
             }
         }
     },
+    "cashapp": {
+        "3rdparty": {
+            "columns": [
+                "Transaction ID",
+                "Date",
+                "Transaction Type",
+                "Currency",
+                "Amount",
+                "Fee",
+                "Net Amount",
+                "Asset Type",
+                "Asset Price",
+                "Asset Amount",
+                "Status",
+                "Notes",
+                "Name of sender/receiver",
+                "Account"
+            ],
+            "read_args": {
+                "header": 0,
+                "parse_dates": ["Date"],
+                "names": null
+            },
+            "validation_data": {
+                "schema": {"Date": "datetime64_ns"},
+                "column_values": {
+                    "Currency": {"values": ["USD"], "mode": "equal"},
+                    "Amount": {"values": "^-?\\$\\d+(,\\d{3})*([.]\\d{1,2})?$", "mode": "regex", "na_action": "ignore"},
+                    "Transaction Type": {"values": ["Sent P2P", "Received P2P", "Cash out"], "mode": "superset"},
+                    "Status": {"values": ["PAYMENT REVERSED", "TRANSFER SENT", "PAYMENT SENT", "PAYMENT DEPOSITED"], "mode": "superset"}
+                }
+            }
+        }
+    },
     "chase": {
         "credit": {
             "columns": [

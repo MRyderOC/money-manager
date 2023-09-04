@@ -6,6 +6,7 @@ import pandas as pd
 
 from mymoney.institutions import amex
 from mymoney.institutions import capitalone
+from mymoney.institutions import cashapp
 from mymoney.institutions import chase
 from mymoney.institutions import citi
 from mymoney.institutions import discover
@@ -72,6 +73,7 @@ class InstData:
         match self.institution_name:
             case "amex": inst_obj = amex.AmEx()
             case "capitalone": inst_obj = capitalone.CapitalOne()
+            case "cashapp": inst_obj = cashapp.CashApp()
             case "chase": inst_obj = chase.Chase()
             case "citi": inst_obj = citi.Citi()
             case "discover": inst_obj = discover.Discover()
