@@ -8,7 +8,7 @@ from importlib_resources import files
 
 from mymoney.core.data_classes import InstData
 from mymoney.institutions.institution_base import DataType
-from mymoney.utils.exceptions import DifferentColumnNameException
+from mymoney.utils.common import column_name_checker
 
 
 logging.basicConfig(
@@ -26,25 +26,6 @@ class DataReader:
         self._meta_data = json.loads(
             files("mymoney").joinpath("meta_data.json").read_text()
         )
-
-    def _column_name_checker(
-        self, input_df: pd.DataFrame, columns: List[str]
-    ):
-        """Check if the columns of `input_df` is identical to `columns`.
-
-        Args:
-            input_df (pd.DataFrame):
-                The input DataFrame.
-            columns (List[str]):
-                Columns that `input_df` columns will be compared to.
-
-        Raises:
-            DifferentColumnNameException: if the columns don't match
-        """
-        if set(input_df.columns) != set(columns):
-            raise DifferentColumnNameException(
-                "DataFrame columns are not matched with `columns`."
-            )
 
     def _path_is_csv_like(self, path: str) -> bool:
         """Check whether the `path` is a path to csv file.
@@ -90,11 +71,16 @@ class DataReader:
                 True if `input_df` is from WellsFargo institution.
             """
 
-            check_wellsfargo = (
-                "Unnamed: 3" in input_df.columns and "*" in input_df.columns,
-                (input_df["Unnamed: 3"].isna()).all(),
-                (input_df["*"] == "*").all(),
-            )
+            try:
+                check_wellsfargo = (
+                    "Unnamed: 3" in input_df.columns,
+                    "*" in input_df.columns,
+                    (input_df["Unnamed: 3"].isna()).all(),
+                    (input_df["*"] == "*").all(),
+                )
+            except KeyError:
+                return False
+
             if not all(check_wellsfargo):
                 return False
 
@@ -154,7 +140,7 @@ class DataReader:
                 try:
                     input_df = pd.read_csv(
                         filepath_or_buffer=path, **read_args)
-                    self._column_name_checker(input_df, cols)
+                    column_name_checker(input_df, cols)
                     read_flag = True
                 except Exception as err:
                     error_msg = err
