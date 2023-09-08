@@ -40,9 +40,14 @@ class Venmo(institution_base.Institution):
             """
 
             def is_transfer_finder(val):
-                if val == "Standard Transfer":
+                transfer_list = ["Standard Transfer", "Credit Card Payment"]
+                expense_list = [
+                    "Payment", "Charge",
+                    "Merchant Transaction", "Credit Card Reward"
+                ]
+                if val in transfer_list:
                     return "transfer"
-                elif val in ["Payment", "Charge", "Merchant Transaction"]:
+                elif val in expense_list:
                     return "expense"
                 else:
                     return "consider"
@@ -62,6 +67,8 @@ class Venmo(institution_base.Institution):
                     out = f"{row['From']} -> {row['To']}: {row['Note']}"
                 elif row_type == "Charge":
                     out = f"{row['To']} -> {row['From']}: {row['Note']}"
+                elif row_type in ["Credit Card Payment", "Credit Card Reward"]:
+                    out = row_type
                 else:
                     out = (
                         f"Consider: {row['Note']}:"

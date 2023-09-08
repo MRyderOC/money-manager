@@ -286,7 +286,10 @@
                 "Statement Period Venmo Fees",
                 "Terminal Location",
                 "Year to Date Venmo Fees",
-                "Disclaimer"
+                "Disclaimer",
+                "Amount (tax)",
+                "Tax Exempt",
+                "Tax Rate"
             ],
             "read_args": {
                 "header": 2,
@@ -298,7 +301,7 @@
                     "Datetime": "datetime64_ns"
                 },
                 "column_values": {
-                    "Type": {"values": ["Payment", "Charge", "Merchant Transaction", "Standard Transfer"], "mode": "superset"},
+                    "Type": {"values": ["Payment", "Charge", "Merchant Transaction", "Standard Transfer", "Credit Card Payment", "Credit Card Reward"], "mode": "superset"},
                     "Status": {"values": ["Issued", "Complete"], "mode": "superset"},
                     "Amount (total)": {"values": "^[+|-] [$]\\d+(,\\d{3})*[.]\\d{1,2}$", "mode": "regex"}
                 }

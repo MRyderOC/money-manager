@@ -140,7 +140,7 @@ class DataReader:
                 try:
                     input_df = pd.read_csv(
                         filepath_or_buffer=path, **read_args)
-                    column_name_checker(input_df, cols)
+                    column_name_checker(input_df, cols, "subset")
                     read_flag = True
                 except Exception as err:
                     error_msg = err
