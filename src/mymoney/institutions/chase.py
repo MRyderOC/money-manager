@@ -40,7 +40,7 @@ class Chase(institution_base.Institution):
             """
 
             def is_transfer_finder(val):
-                if val == "Sale":
+                if val in ["Sale", "Adjustment"]:
                     return "expense"
                 elif val == "Payment":
                     return "transfer"

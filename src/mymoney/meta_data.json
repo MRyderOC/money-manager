@@ -178,7 +178,7 @@
                     "Amount": "float"
                 },
                 "column_values": {
-                    "Type": {"values": ["Sale", "Payment"], "mode": "superset"},
+                    "Type": {"values": ["Sale", "Payment", "Adjustment"], "mode": "superset"},
                     "Amount": {"values": "^-?\\d+[.]\\d{1,2}$", "mode": "regex"}
                 }
             }
