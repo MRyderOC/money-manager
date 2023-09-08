@@ -37,19 +37,44 @@ def raise_or_log(
         raise exception_type(message)
 
 
-def column_name_checker(input_df: pd.DataFrame, columns: List[str]):
-    """Check if the columns of `input_df` is identical to `columns`.
+def column_name_checker(
+    input_df: pd.DataFrame, columns: List[str], mode: str = "equal"
+):
+    """Check if the columns of `input_df` is subset or identical to `columns`.
 
     Args:
         input_df (pd.DataFrame):
             The input DataFrame.
         columns (List[str]):
             Columns that `input_df` columns will be compared to.
+        mode (str):
+            How to compare the columns. Accepted values:
+                equal: `columns` and `input_df` columns have identical values.
+                subset: `input_df` columns are subset of `columns`.
+                superset: `input_df` columns are superset of `columns`.
 
     Raises:
         DifferentColumnNameException: if the columns don't match.
+        ValueError: if mode is not one of the following:
+            ['equal', 'subset', 'superset']
     """
-    if set(input_df.columns) != set(columns):
-        raise DifferentColumnNameException(
-            "DataFrame columns are not matched with `columns`."
+    if mode == "equal":
+        if set(input_df.columns) != set(columns):
+            raise DifferentColumnNameException(
+                "DataFrame columns are not matched with `columns`."
+            )
+    elif mode == "subset":
+        if not set(input_df.columns).issubset(set(columns)):
+            raise DifferentColumnNameException(
+                "DataFrame columns are not subset of `columns`."
+            )
+    elif mode == "superset":
+        if not set(input_df.columns).issuperset(set(columns)):
+            raise DifferentColumnNameException(
+                "DataFrame columns are not superset of `columns`."
+            )
+    else:
+        raise ValueError(
+            "`mode` should be one of the following:"
+            " ['equal', 'subset', 'superset']"
         )
