@@ -104,7 +104,7 @@ class CapitalOne(institution_base.Institution):
                         r"VENMO|DISCOVER|AMEX|PAYPAL|SAMS CLUB PAYMENT|"
                         r"CHASE CREDIT CRD AUTOPAY|CHASE CREDIT CRD EPAY|"
                         r"WELLS FARGO|WF Credit Card AUTO PAY|"
-                        r"CITI CARD|CITI AUTOPAY PAYMENT|"
+                        r"CITI CARD|CITI AUTOPAY PAYMENT|Cash App|"
                         r"SOFI [\w\s\.]* CARD PAYMT|SoFi Bank TRANSFER|"
                         r"CAPITAL ONE [\w\s]*PMT|"
                         r"360 Checking|360 Performance Savings",

@@ -18,6 +18,8 @@ logging.basicConfig(
     # filename="logs.log",
 )
 
+pd.options.mode.chained_assignment = None
+
 
 class DataReader:
     """Main class for reading data."""
