@@ -5,7 +5,7 @@
                 "Description", "Amount", "Date",
                 "Institution", "AccountName",
                 "InstitutionCategory", "MyCategory",
-                "IsTransfer", "IsValid", "Service"
+                "IsTransfer", "IsValid", "Service", "Notes"
             ],
             "read_args": {
                 "header": 0,
