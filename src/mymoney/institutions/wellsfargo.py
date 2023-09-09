@@ -42,7 +42,8 @@ class WellsFargo(institution_base.Institution):
             def is_transfer_finder(row):
                 try:
                     regex_flag_payment = re.search(
-                        r"AUTOMATIC PAYMENT - THANK",
+                        r"AUTOMATIC PAYMENT - THANK|"
+                        r"ONLINE ACH PAYMENT THANK YOU",
                         str(row["_new_Description"])
                     )
                 except Exception:
@@ -86,7 +87,8 @@ class WellsFargo(institution_base.Institution):
                 try:
                     regex_flag_payment = re.search(
                         r"AUTOMATIC PAYMENT - THANK|"
-                        r"ONLINE ACH PAYMENT THANK YOU",
+                        r"ONLINE ACH PAYMENT THANK YOU|ONLINE TRANSFER REF|"
+                        r"PAYPAL TRANSFER",
                         str(row["_new_Description"])
                     )
                 except Exception:
