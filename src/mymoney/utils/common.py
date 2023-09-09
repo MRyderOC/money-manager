@@ -40,7 +40,8 @@ def raise_or_log(
 def column_name_checker(
     input_df: pd.DataFrame, columns: List[str], mode: str = "equal"
 ):
-    """Check if the columns of `input_df` is subset or identical to `columns`.
+    """Check if the columns of `input_df`
+    is subset, superset, or equal to `columns`.
 
     Args:
         input_df (pd.DataFrame):
