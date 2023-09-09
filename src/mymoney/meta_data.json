@@ -2,9 +2,10 @@
     "base": {
         "expense": {
             "columns": [
-                "Description", "Amount", "Date", "Institution",
+                "Description", "Amount", "Date",
+                "Institution", "AccountName",
                 "InstitutionCategory", "MyCategory",
-                "IsTransfer", "IsValid"
+                "IsTransfer", "IsValid", "Service", "Notes"
             ],
             "read_args": {
                 "header": 0,
@@ -15,12 +16,13 @@
                 "schema": {
                     "Amount": "float",
                     "Date": "datetime",
-                    "isValid": "bool"
+                    "IsValid": "bool"
                 },
                 "column_values": {
                     "Amount": {"values": "^-?\\d+[.]\\d{1,2}$", "mode": "regex"},
                     "IsTransfer": {"values": ["expense", "transfer", "consider", "redundant"], "mode": "superset"},
-                    "IsValid": {"values": [true, false], "mode": "equal"}
+                    "IsValid": {"values": [true, false], "mode": "equal"},
+                    "Service": {"values": ["debit", "credit", "3rdparty"], "mode": "equal"}
                 }
             }
         }
@@ -90,6 +92,67 @@
                     "Credit": {"values": "^\\d+[.]\\d{1,2}$", "mode": "regex", "na_action": "ignore"}
                 }
             }
+        },
+        "debit": {
+            "columns": [
+                "Account Number",
+                "Transaction Date",
+                "Transaction Amount",
+                "Transaction Type",
+                "Transaction Description",
+                "Balance"
+            ],
+            "read_args": {
+                "header": 0,
+                "parse_dates": ["Transaction Date"],
+                "names": null
+            },
+            "validation_data": {
+                "schema": {
+                    "Account Number": "int",
+                    "Transaction Date": "datetime64_ns",
+                    "Transaction Amount": "float",
+                    "Balance": "float"
+                },
+                "column_values": {
+                    "Account Number": {"values": "^\\d{4}$", "mode": "regex"},
+                    "Transaction Type": {"values": ["Credit", "Debit"], "mode": "superset"}
+                }
+            }
+        }
+    },
+    "cashapp": {
+        "3rdparty": {
+            "columns": [
+                "Transaction ID",
+                "Date",
+                "Transaction Type",
+                "Currency",
+                "Amount",
+                "Fee",
+                "Net Amount",
+                "Asset Type",
+                "Asset Price",
+                "Asset Amount",
+                "Status",
+                "Notes",
+                "Name of sender/receiver",
+                "Account"
+            ],
+            "read_args": {
+                "header": 0,
+                "parse_dates": ["Date"],
+                "names": null
+            },
+            "validation_data": {
+                "schema": {"Date": "datetime64_ns"},
+                "column_values": {
+                    "Currency": {"values": ["USD"], "mode": "equal"},
+                    "Amount": {"values": "^-?\\$\\d+(,\\d{3})*([.]\\d{1,2})?$", "mode": "regex", "na_action": "ignore"},
+                    "Transaction Type": {"values": ["Sent P2P", "Received P2P", "Cash out"], "mode": "superset"},
+                    "Status": {"values": ["PAYMENT REVERSED", "TRANSFER SENT", "PAYMENT SENT", "PAYMENT DEPOSITED"], "mode": "superset"}
+                }
+            }
         }
     },
     "chase": {
@@ -115,7 +178,7 @@
                     "Amount": "float"
                 },
                 "column_values": {
-                    "Type": {"values": ["Sale", "Payment"], "mode": "superset"},
+                    "Type": {"values": ["Sale", "Payment", "Adjustment"], "mode": "superset"},
                     "Amount": {"values": "^-?\\d+[.]\\d{1,2}$", "mode": "regex"}
                 }
             }
@@ -223,7 +286,10 @@
                 "Statement Period Venmo Fees",
                 "Terminal Location",
                 "Year to Date Venmo Fees",
-                "Disclaimer"
+                "Disclaimer",
+                "Amount (tax)",
+                "Tax Exempt",
+                "Tax Rate"
             ],
             "read_args": {
                 "header": 2,
@@ -235,9 +301,51 @@
                     "Datetime": "datetime64_ns"
                 },
                 "column_values": {
-                    "Type": {"values": ["Payment", "Charge", "Merchant Transaction", "Standard Transfer"], "mode": "superset"},
+                    "Type": {"values": ["Payment", "Charge", "Merchant Transaction", "Standard Transfer", "Credit Card Payment", "Credit Card Reward"], "mode": "superset"},
                     "Status": {"values": ["Issued", "Complete"], "mode": "superset"},
                     "Amount (total)": {"values": "^[+|-] [$]\\d+(,\\d{3})*[.]\\d{1,2}$", "mode": "regex"}
+                }
+            }
+        }
+    },
+    "wellsfargo": {
+        "credit": {
+            "columns": [],
+            "read_args": {
+                "parse_dates": ["Date"],
+                "names": ["Date", "Amount", "x", "y", "Description"]
+            },
+            "validation_data": {
+                "schema": {
+                    "Amount": "float",
+                    "Date": "datetime",
+                    "IsValid": "bool"
+                },
+                "column_values": {
+                    "Amount": {"values": "^-?\\d+[.]\\d{1,2}$", "mode": "regex"},
+                    "IsTransfer": {"values": ["expense", "transfer", "consider", "redundant"], "mode": "superset"},
+                    "IsValid": {"values": [true, false], "mode": "equal"},
+                    "Service": {"values": ["debit", "credit", "3rdparty"], "mode": "equal"}
+                }
+            }
+        },
+        "debit": {
+            "columns": [],
+            "read_args": {
+                "parse_dates": ["Date"],
+                "names": ["Date", "Amount", "x", "y", "Description"]
+            },
+            "validation_data": {
+                "schema": {
+                    "Amount": "float",
+                    "Date": "datetime",
+                    "IsValid": "bool"
+                },
+                "column_values": {
+                    "Amount": {"values": "^-?\\d+[.]\\d{1,2}$", "mode": "regex"},
+                    "IsTransfer": {"values": ["expense", "transfer", "consider", "redundant"], "mode": "superset"},
+                    "IsValid": {"values": [true, false], "mode": "equal"},
+                    "Service": {"values": ["debit", "credit", "3rdparty"], "mode": "equal"}
                 }
             }
         }

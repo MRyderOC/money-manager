@@ -1,4 +1,3 @@
-import re
 import logging
 
 import numpy as np
@@ -14,10 +13,10 @@ logging.basicConfig(
 )
 
 
-class PayPal(institution_base.Institution):
-    """A class for PayPal institution's data cleaning functions."""
+class CashApp(institution_base.Institution):
+    """A class for CashApp institution's data cleaning functions."""
 
-    _this_institution_name = "paypal"
+    _this_institution_name = "cashapp"
 
     def __init__(self) -> None:
         super().__init__()
@@ -39,42 +38,45 @@ class PayPal(institution_base.Institution):
             Returns:
                 The same DataFrame with new columns for cleaned data.
             """
-
             def is_transfer_finder(row):
-                name_is_nan = pd.isna(row["Name"])
-                try:
-                    regex_flag_redundant = re.search(
-                        "Authorization|Order", str(row["Type"])
-                    )
-                except Exception:
-                    return "consider"
-
-                if regex_flag_redundant:
+                row_status = row["Status"]
+                if row_status == "PAYMENT REVERSED":
                     return "redundant"
-                elif name_is_nan:
+                elif row_status == "TRANSFER SENT":
                     return "transfer"
-                elif not (name_is_nan or regex_flag_redundant):
+                elif row_status in ["PAYMENT SENT", "PAYMENT DEPOSITED"]:
                     return "expense"
                 else:
                     return "consider"
 
+            def amount_finder(val):
+                return float(
+                    str(val).replace(",", "").replace("$", "")
+                )
+
             def description_finder(row):
-                if pd.isna(row["Name"]):
-                    out = str(row["Type"])
+                row_type = row["Transaction Type"]
+                row_sender_receiver = row["Name of sender/receiver"]
+                row_notes = row["Notes"]
+                notes = "" if pd.isna(row_notes) else f" ({row_notes})"
+
+                if row_type == "Sent P2P":
+                    out = f"Me -> {row_sender_receiver}{notes}"
+                elif row_type == "Received P2P":
+                    out = f"From {row_sender_receiver} -> Me{notes}"
+                elif row_type == "Cash out":
+                    out = "Cash out"
                 else:
-                    out = f"{str(row['Name'])}: {row['Type']}"
+                    out = "Consider"
 
                 return out.strip()
-
-            def amount_finder(val):
-                return float(str(val).replace(",", ""))
 
             input_df["_new_Description"] = input_df.apply(description_finder, axis=1)  # noqa: E501
             input_df["_new_Amount"] = input_df["Amount"].map(amount_finder)
             input_df["_new_Date"] = input_df["Date"].copy(deep=True)
             input_df["_new_InstitutionCategory"] = np.nan
             input_df["_new_MyCategory"] = np.nan
-            input_df["_new_Institution"] = "PayPal"
+            input_df["_new_Institution"] = "CashApp"
             input_df["_new_AccountName"] = account_name
             input_df["_new_Service"] = self._service_type.value
             input_df["_new_IsTransfer"] = input_df.apply(is_transfer_finder, axis=1)  # noqa: E501

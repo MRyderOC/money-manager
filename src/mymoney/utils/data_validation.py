@@ -4,6 +4,8 @@ from typing import Any, List, Tuple, Dict, Union
 import numpy as np
 import pandas as pd
 
+from mymoney.utils.common import raise_or_log
+
 
 logging.basicConfig(
     level=logging.INFO,
@@ -12,37 +14,12 @@ logging.basicConfig(
 )
 
 
+@pd.api.extensions.register_series_accessor("validate")
 class SeriesValidation:
     """A class for validating specific criteria of a Series."""
 
     def __init__(self, pandas_obj):
         self._obj = pandas_obj
-
-
-    def _raise_or_log(
-        self,
-        message: str,
-        logs: bool = True,
-        raises: bool = False,
-        exception_type = Exception,
-    ):
-        """Raise an exception or log a message.
-
-        Args:
-            message (str):
-                The message that should be attached.
-            logs (bool):
-                Whether to log the results if something went wrong.
-            raises (bool):
-                Whether to raise an error or not.
-            exception_type:
-                The exception that should be raised.
-        """
-        if logs:
-            logging.warning(message)
-        if raises:
-            raise exception_type(message)
-
 
     def _find_faulty_indexes(self, ser: pd.Series) -> List:
         """Find the indexes that cause problem.
@@ -59,20 +36,21 @@ class SeriesValidation:
         if not pd.api.types.is_bool_dtype(ser):
             return list(ser.index)
 
-        return list(ser[ser == False].index)
-
+        return list(ser[ser == False].index)  # noqa: E712
 
     def _check_dtype(self, dtype: str) -> bool:
         """For a given Series specifies if elements have dtypes.
+
         Args:
-            ser (pd.Series): Any Series
             dtype (str): Accepted values: [
                     'object', 'bool', ('string', 'str'),
                 # number related
                     'numeric', 'float', 'complex', 'int', 'int64',
                 # signed or unsigned int
-                    ('signed_int' or 'signed-int' or 'signed int' or 'signedint' or 'sint'),
-                    ('unsigned_int' or 'unsigned-int' or 'unsigned int' or 'unsignedint' or 'uint'),
+                    ('signed_int' or 'signed-int' or
+                        'signed int' or 'signedint' or 'sint'),
+                    ('unsigned_int' or 'unsigned-int' or
+                        'unsigned int' or 'unsignedint' or 'uint'),
                 # time related
                     'datetime', 'datetime64', 'datetime64_ns', 'datetime64_tz',
                     'timedelta64', 'timedelta64_ns'
@@ -81,6 +59,13 @@ class SeriesValidation:
         Returns:
             A boolean value
         """
+        signed_ints = [
+            "signed_int", "signed-int", "signed int", "signedint", "sint"
+        ]
+        unsigned_ints = [
+            "unsigned_int", "unsigned-int", "unsigned int",
+            "unsignedint", "uint"
+        ]
         if dtype == "object":
             result = pd.api.types.is_object_dtype(self._obj)
         elif dtype == "bool":
@@ -97,9 +82,9 @@ class SeriesValidation:
             result = pd.api.types.is_integer_dtype(self._obj)
         elif dtype == "int64":
             result = pd.api.types.is_int64_dtype(self._obj)
-        elif dtype in ["signed_int", "signed-int", "signed int", "signedint", "sint"]:
+        elif dtype in signed_ints:
             result = pd.api.types.is_signed_integer_dtype(self._obj)
-        elif dtype in ["unsigned_int", "unsigned-int", "unsigned int", "unsignedint", "uint"]:
+        elif dtype in unsigned_ints:
             result = pd.api.types.is_unsigned_integer_dtype(self._obj)
         elif dtype == "datetime":
             result = pd.api.types.is_datetime64_any_dtype(self._obj)
@@ -120,7 +105,6 @@ class SeriesValidation:
 
         return result
 
-
     def _check_no_x(self, values: List):
         """Check whether the Series doesn't contain `values`.
 
@@ -134,18 +118,17 @@ class SeriesValidation:
             return self._find_faulty_indexes(~new_ser)
         return True
 
-
     def _check_vals(
         self, values, mode: str, na_action: str = None
     ) -> Union[bool, Dict[str, List[int]]]:
         """Check whether the Series contains `values`.
 
         Args:
-            values (List):
-                A list of values to check for in the Series.
+            values:
+                Values to check for in the Series.
             mode (str):
                 Accepted values: [
-                    'range' -> values of the Series are in the range of `values`,
+                    'range' -> the Series are in the range of `values`,
                     'regex' -> values of the Series have the `values`
                         regex pattern,
                     ('n_std' or 'n-std' or 'n std') -> values of the Series
@@ -179,7 +162,9 @@ class SeriesValidation:
             if not pd.api.types.is_re_compilable(values):
                 raise ValueError("`values` is not a regex compilable string.")
 
-            new_ser = to_check_ser.astype(str).str.contains(values, na=False, regex=True)
+            new_ser = to_check_ser.astype(str).str.contains(
+                values, na=False, regex=True
+            )
             if not new_ser.all():
                 return {"idxs": self._find_faulty_indexes(new_ser)}
             return True
@@ -213,7 +198,9 @@ class SeriesValidation:
                     ser_extra = ser_unique_vals_set - vals_set
                     values_extra = vals_set - ser_unique_vals_set
                     return {
-                        "idxs": self._find_faulty_indexes(~to_check_ser.isin(ser_extra)),
+                        "idxs": self._find_faulty_indexes(
+                            ~to_check_ser.isin(ser_extra)
+                        ),
                         "extra_vals": list(values_extra)
                     }
                 return True
@@ -223,7 +210,9 @@ class SeriesValidation:
                 return True
             elif mode == "superset":
                 if not vals_set.issuperset(ser_unique_vals_set):
-                    return {"idxs": self._find_faulty_indexes(to_check_ser.isin(values))}
+                    return {"idxs": self._find_faulty_indexes(
+                        to_check_ser.isin(values)
+                    )}
                 return True
         else:
             raise Exception(
@@ -232,7 +221,6 @@ class SeriesValidation:
                 " 'equal', 'subset', 'superset']"
             )
 
-
     def has_dtype(
         self,
         dtype: str,
@@ -240,19 +228,21 @@ class SeriesValidation:
         raises: bool = False,
     ):
         """Specifies if the elements of the Series have `dtypes`.
+
         Args:
-            dtype (str):
-                Accepted values: [
-                    'object', 'bool', 'string',
+            dtype (str): Accepted values: [
+                    'object', 'bool', ('string', 'str'),
                 # number related
                     'numeric', 'float', 'complex', 'int', 'int64',
                 # signed or unsigned int
-                    ('signed_int', 'signed-int', 'signed int', 'signedint', 'sint'),
-                    ('unsigned_int', 'unsigned-int', 'unsigned int', 'unsignedint', 'uint'),
+                    ('signed_int' or 'signed-int' or
+                        'signed int' or 'signedint' or 'sint'),
+                    ('unsigned_int' or 'unsigned-int' or
+                        'unsigned int' or 'unsignedint' or 'uint'),
                 # time related
                     'datetime', 'datetime64', 'datetime64_ns', 'datetime64_tz',
                     'timedelta64', 'timedelta64_ns'
-                ]
+            ]
             logs (bool):
                 Whether to log the results if something went wrong.
             raises (bool):
@@ -263,8 +253,7 @@ class SeriesValidation:
                 f"This series has the wrong dtype."
                 f"\nShould be ({dtype}), but is ({self._obj.dtype})"
             )
-            self._raise_or_log(msg, logs, raises, Exception)
-
+            raise_or_log(msg, logs, raises, Exception)
 
     def has_no_x(
         self,
@@ -283,13 +272,12 @@ class SeriesValidation:
                 Whether to raise an error or not.
         """
         faulty_idxs = self._check_no_x(values)
-        if not(faulty_idxs is True):
+        if not (faulty_idxs is True):
             msg = (
-                "This series contains at least one of the elements in `values`."
+                "This series contains at least one of the elements in `values`"
                 f"\nThe indexes: {faulty_idxs}"
             )
-            self._raise_or_log(msg, logs, raises)
-
+            raise_or_log(msg, logs, raises)
 
     def has_vals(
         self,
@@ -303,14 +291,14 @@ class SeriesValidation:
 
         Args:
             values (List):
-                A list of values to check for in the Series.
+                Values to check for in the Series.
             mode (str):
                 Accepted values: [
-                    'range' -> values of the Series are in the range of `values`,
+                    'range' -> the Series are in the range of `values`,
                     'regex' -> values of the Series have the `values`
                         regex pattern,
                     ('n_std' or 'n-std' or 'n std') -> values of the Series
-                        are within `values` standard devation of the mean,
+                        are within `values` standard deviation of the mean,
                     'equal' -> values of the Series are exactly like `values`,
                     'subset' -> `values` is subset of values in the Series,
                     'superset' -> `values` is superset of values in the Series,
@@ -323,17 +311,19 @@ class SeriesValidation:
                 Whether to raise an error or not.
         """
         error_dict = self._check_vals(values, mode, na_action)
-        if not(error_dict is True):
+        if not (error_dict is True):
             msg = ""
             if mode == "range":
                 msg = (
                     "Some of the values of this series are not in the range"
-                    f" specified in `values`.\nThe indexes: {error_dict['idxs']}"
+                    " specified in `values`."
+                    f"\nThe indexes: {error_dict['idxs']}"
                 )
             elif mode == "regex":
                 msg = (
                     "Some of the values of this series doesn't match with"
-                    f" the regex `{values}`.\nThe indexes: {error_dict['idxs']}"
+                    " the regex `{values}`."
+                    f"\nThe indexes: {error_dict['idxs']}"
                 )
             elif mode in ["n_std", "n-std", "n std"]:
                 msg = (
@@ -345,7 +335,8 @@ class SeriesValidation:
                 msg = (
                     "The `values` is not equal to the values in the Series."
                     f"\nExtra values in `values`: {error_dict['extra_vals']}"
-                    f"\nIndex of extra values in the series: {error_dict['idxs']}"
+                    "\nIndex of extra values in the series:"
+                    f" {error_dict['idxs']}"
                 )
             elif mode == "subset":
                 msg = (
@@ -358,7 +349,7 @@ class SeriesValidation:
                     f" the Series.\nThe indexes: {error_dict['idxs']}"
                 )
 
-            self._raise_or_log(msg, logs, raises)
+            raise_or_log(msg, logs, raises)
 
 
 class DataFrameValidation:
@@ -367,34 +358,8 @@ class DataFrameValidation:
     def __init__(self, pandas_obj):
         self._obj = pandas_obj
 
-        @pd.api.extensions.register_series_accessor("validate")
-        class MySerVal(SeriesValidation): ...
-
-
-    def _raise_or_log(
-        self,
-        message: str,
-        logs: bool = True,
-        raises: bool = False,
-        exception_type = Exception,
-    ):
-        """Raise an exception or log a message.
-
-        Args:
-            message (str):
-                The message that should be attached.
-            logs (bool):
-                Whether to log the results if something went wrong.
-            raises (bool):
-                Whether to raise an error or not.
-            exception_type:
-                The exception that should be raised.
-        """
-        if logs:
-            logging.warning(message)
-        if raises:
-            raise exception_type(message)
-
+        # @pd.api.extensions.register_series_accessor("validate")
+        # class MySerVal(SeriesValidation): ...
 
     def is_shape(
         self,
@@ -402,7 +367,7 @@ class DataFrameValidation:
         logs: bool = True,
         raises: bool = False,
     ):
-        """Speciefies the DataFrame has `shape`.
+        """Specifies the DataFrame has `shape`.
 
         Args:
             shape (Tuple[int, int]):
@@ -427,14 +392,13 @@ class DataFrameValidation:
         )
         if shape[0] == -1:
             if ax1_shape != shape[1]:
-                self._raise_or_log(msg, logs, raises, Exception)
+                raise_or_log(msg, logs, raises, Exception)
         elif shape[1] == -1:
             if ax0_shape != shape[0]:
-                self._raise_or_log(msg, logs, raises, Exception)
+                raise_or_log(msg, logs, raises, Exception)
         else:
             if ax0_shape != shape[0] or ax1_shape != shape[1]:
-                self._raise_or_log(msg, logs, raises, Exception)
-
+                raise_or_log(msg, logs, raises, Exception)
 
     def has_schema(
         self,
@@ -460,8 +424,7 @@ class DataFrameValidation:
                     f"\n{col} has the wrong dtype."
                     f"\nShould be ({dtype}), is ({self._obj[col].dtype})"
                 )
-                self._raise_or_log(msg, logs, raises, Exception)
-
+                raise_or_log(msg, logs, raises, Exception)
 
     def has_dtypes(
         self,
@@ -472,7 +435,7 @@ class DataFrameValidation:
         """Same as `has_schema`.
 
         Args:
-            schema (Dict[str, str])
+            schema (Dict[str, str]):
                 Mapping of columns to dtypes as string.
             logs (bool):
                 Whether to log the results if something went wrong.
@@ -481,7 +444,6 @@ class DataFrameValidation:
         """
         self.has_schema(dtypes_dict, logs, raises)
 
-
     def has_vals(
         self,
         col_vals_dict: Dict[str, Dict[str, Any]],
@@ -489,13 +451,16 @@ class DataFrameValidation:
         logs: bool = True,
         raises: bool = False,
     ):
-        """Check whether the DataFrame columns contains specific.
+        """Check whether the DataFrame columns contains specific values.
 
         Args:
             col_vals_dict (Dict[str, Dict[str, Any]]):
                 A dictionary with keys as column names and values should be
-                a dictionary like
-                  {"vlaues": `desired value`, "mode": `desired mode`, "na_action": `desired action`}
+                a dictionary like: {
+                    "values": `desired value`,
+                    "mode": `desired mode`,
+                    "na_action": `desired action`
+                    }
                 Refer to `has_vals` method in `SeriesValidation` for more info.
             validation_column (bool):
                 Create `is_valid` column in the DataFrame with bool values to
@@ -510,14 +475,14 @@ class DataFrameValidation:
             if col not in self._obj.columns:
                 continue
             vals_error = self._obj[col].validate._check_vals(**val_args)
-            if not(vals_error is True):
+            if not (vals_error is True):
                 faulty_idxs.extend(vals_error["idxs"])
                 msg = (
                     f"{col} has the wrong value."
                     f"\nShould be ({val_args['values']})"
                     f"\nErrors: {vals_error}\n"
                 )
-                self._raise_or_log(msg, logs, raises, Exception)
+                raise_or_log(msg, logs, raises, Exception)
 
         if return_validation_col:
             faulty_idxs_unique = list(set(faulty_idxs))
