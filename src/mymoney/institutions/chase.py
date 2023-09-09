@@ -1,6 +1,6 @@
 import logging
 
-import numpy as np
+import numpy as np  # noqa: F401
 import pandas as pd
 
 from mymoney.institutions import institution_base
@@ -21,31 +21,40 @@ class Chase(institution_base.Institution):
     def __init__(self) -> None:
         super().__init__()
 
-
     class CreditService(institution_base.Institution.CreditService):
-        """docs here!"""
+        """A class for Credit Service."""
 
-
-        def _cleaning(
+        def _csv_cleaning(
             self, input_df: pd.DataFrame, account_name: str
         ) -> pd.DataFrame:
-            """docs here!"""
+            """A method for cleaning process of CSV files for this service.
+
+            Args:
+                input_df (pd.DataFrame):
+                    The input DataFrame.
+                account_name (str):
+                    The name of the account associated with this service.
+
+            Returns:
+                The same DataFrame with new columns for cleaned data.
+            """
 
             def is_transfer_finder(val):
-                if val == "Sale":
+                if val in ["Sale", "Adjustment"]:
                     return "expense"
                 elif val == "Payment":
                     return "transfer"
                 else:
                     return "consider"
 
-
-            input_df["_new_Description"] = input_df["Description"].map(lambda val: str(val).strip())
+            input_df["_new_Description"] = input_df["Description"].map(lambda val: str(val).strip())  # noqa: E501
             input_df["_new_Amount"] = input_df["Amount"].copy(deep=True)
-            input_df["_new_Date"] = input_df["Transaction Date"].copy(deep=True)
-            input_df["_new_InstitutionCategory"] = input_df["Category"].copy(deep=True)
+            input_df["_new_Date"] = input_df["Transaction Date"].copy(deep=True)  # noqa: E501
+            input_df["_new_InstitutionCategory"] = input_df["Category"].copy(deep=True)  # noqa: E501
             input_df["_new_MyCategory"] = input_df["Category"].copy(deep=True)
-            input_df["_new_Institution"] = pd.Series([f"Chase {account_name}"] * len(input_df))
-            input_df["_new_IsTransfer"] = input_df["Type"].map(is_transfer_finder)
+            input_df["_new_Institution"] = "Chase"
+            input_df["_new_AccountName"] = account_name
+            input_df["_new_Service"] = self._service_type.value
+            input_df["_new_IsTransfer"] = input_df["Type"].map(is_transfer_finder)  # noqa: E501
 
             return input_df

@@ -21,20 +21,33 @@ class Venmo(institution_base.Institution):
     def __init__(self) -> None:
         super().__init__()
 
-
     class ThirdPartyService(institution_base.Institution.ThirdPartyService):
-        """docs here!"""
+        """A class for ThirdParty Service."""
 
-
-        def _cleaning(
+        def _csv_cleaning(
             self, input_df: pd.DataFrame, account_name: str
         ) -> pd.DataFrame:
-            """A class for Venmo institution's data cleaning functions."""
+            """A method for cleaning process of CSV files for this service.
+
+            Args:
+                input_df (pd.DataFrame):
+                    The input DataFrame.
+                account_name (str):
+                    The name of the account associated with this service.
+
+            Returns:
+                The same DataFrame with new columns for cleaned data.
+            """
 
             def is_transfer_finder(val):
-                if val == "Standard Transfer":
+                transfer_list = ["Standard Transfer", "Credit Card Payment"]
+                expense_list = [
+                    "Payment", "Charge",
+                    "Merchant Transaction", "Credit Card Reward"
+                ]
+                if val in transfer_list:
                     return "transfer"
-                elif val in ["Payment", "Charge", "Merchant Transaction"]:
+                elif val in expense_list:
                     return "expense"
                 else:
                     return "consider"
@@ -54,17 +67,24 @@ class Venmo(institution_base.Institution):
                     out = f"{row['From']} -> {row['To']}: {row['Note']}"
                 elif row_type == "Charge":
                     out = f"{row['To']} -> {row['From']}: {row['Note']}"
+                elif row_type in ["Credit Card Payment", "Credit Card Reward"]:
+                    out = row_type
                 else:
-                    out = f"Consider: {row['Note']}: {row['From']} -> {row['To']}. (Type: {row_type})"
+                    out = (
+                        f"Consider: {row['Note']}:"
+                        f" {row['From']} -> {row['To']}. (Type: {row_type})"
+                    )
 
                 return out.strip()
 
-            input_df["_new_Description"] = input_df.apply(description_finder, axis=1)
-            input_df["_new_Amount"] = input_df["Amount (total)"].map(amount_finder)
+            input_df["_new_Description"] = input_df.apply(description_finder, axis=1)  # noqa: E501
+            input_df["_new_Amount"] = input_df["Amount (total)"].map(amount_finder)  # noqa: E501
             input_df["_new_Date"] = input_df["Datetime"].copy(deep=True)
-            input_df["_new_InstitutionCategory"] = pd.Series([np.nan] * len(input_df))
-            input_df["_new_MyCategory"] = pd.Series([np.nan] * len(input_df))
-            input_df["_new_Institution"] = pd.Series([f"Venmo {account_name}"] * len(input_df))
-            input_df["_new_IsTransfer"] = input_df["Type"].map(is_transfer_finder)
+            input_df["_new_InstitutionCategory"] = np.nan
+            input_df["_new_MyCategory"] = np.nan
+            input_df["_new_Institution"] = "Venmo"
+            input_df["_new_AccountName"] = account_name
+            input_df["_new_Service"] = self._service_type.value
+            input_df["_new_IsTransfer"] = input_df["Type"].map(is_transfer_finder)  # noqa: E501
 
             return input_df.dropna(subset=["_new_Date"])
