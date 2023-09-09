@@ -2,7 +2,7 @@ from mymoney.institutions.institution_base import (
     DataType,
     ServiceType,
     Service,
-    Institution
+    Institution,
 )
 
 from mymoney.institutions.amex import AmEx

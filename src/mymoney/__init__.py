@@ -1,6 +1,6 @@
 from mymoney.core import (
     DataReader,
-    MyData
+    MyData,
 )
 
 
