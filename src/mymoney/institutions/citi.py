@@ -44,7 +44,7 @@ class Citi(institution_base.Institution):
             def amount_finder(row):
                 try:
                     regex_flag = re.search(
-                        "AUTOPAY|ONLINE PAYMENT, THANK YOU",
+                        r"AUTOPAY|ONLINE PAYMENT, THANK YOU",
                         str(row["_new_Description"])
                     )
                 except Exception:
@@ -60,7 +60,7 @@ class Citi(institution_base.Institution):
             def is_transfer_finder(row):
                 try:
                     regex_flag = re.search(
-                        "AUTOPAY|ONLINE PAYMENT, THANK YOU",
+                        r"AUTOPAY|ONLINE PAYMENT, THANK YOU",
                         str(row["_new_Description"])
                     )
                 except Exception:

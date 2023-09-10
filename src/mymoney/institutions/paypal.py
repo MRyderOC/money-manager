@@ -44,7 +44,7 @@ class PayPal(institution_base.Institution):
                 name_is_nan = pd.isna(row["Name"])
                 try:
                     regex_flag_redundant = re.search(
-                        "Authorization|Order", str(row["Type"])
+                        r"Authorization|Order", str(row["Type"])
                     )
                 except Exception:
                     return "consider"
