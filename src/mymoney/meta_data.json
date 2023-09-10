@@ -265,6 +265,33 @@
             }
         }
     },
+    "samsclub": {
+        "credit": {
+            "columns": [
+                "Transaction Date",
+                "Posting Date",
+                "Reference Number",
+                "Amount",
+                "Description"
+            ],
+            "read_args": {
+                "header": 0,
+                "parse_dates": ["Transaction Date", "Posting Date"],
+                "names": null
+            },
+            "validation_data": {
+                "schema": {
+                    "Transaction Date": "datetime64_ns",
+                    "Post Date": "datetime64_ns",
+                    "Amount": "float"
+                },
+                "column_values": {
+                    "Type": {"values": ["Sale", "Payment", "Adjustment"], "mode": "superset"},
+                    "Amount": {"values": "^-?\\d+[.]\\d{1,2}", "mode": "regex"}
+                }
+            }
+        }
+    },
     "venmo": {
         "3rdparty": {
             "columns": [
