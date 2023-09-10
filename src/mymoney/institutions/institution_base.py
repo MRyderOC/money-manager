@@ -36,6 +36,7 @@ class Service:
     """Base class for each service of an institution."""
 
     _service_type = ServiceType.BASE
+    _USDs = ["USD", "USDC", "USDT"]
 
     def __init__(self, inst_meta_data: Dict) -> None:
         md = inst_meta_data.get(self._service_type.value)
