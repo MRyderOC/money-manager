@@ -199,10 +199,8 @@ class DataReader:
                 if not self._path_is_csv_like(filename):
                     continue
 
-                read_data = self.read_csv(
-                    os.path.join(dirpath, filename), account_name
-                )
-                if read_data:
+                tmp_path = os.path.join(dirpath, filename)
+                if read_data := self.read_csv(tmp_path, account_name):
                     out_list.append(read_data)
 
         return out_list
