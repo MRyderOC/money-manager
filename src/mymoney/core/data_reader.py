@@ -1,6 +1,7 @@
 import os
 import json
 import logging
+import warnings
 from typing import List, Dict, Any
 
 import pandas as pd
@@ -18,16 +19,21 @@ logging.basicConfig(
     # filename="logs.log",
 )
 
-pd.options.mode.chained_assignment = None
-
 
 class DataReader:
     """Main class for reading data."""
 
-    def __init__(self) -> None:
+    def __init__(self, warn: bool = False) -> None:
+        """Constructor of DataReader class.
+        Args:
+            warn (bool):
+                To show the warnings or not. Default is False.
+        """
         self._meta_data = json.loads(
             files("mymoney").joinpath("meta_data.json").read_text()
         )
+        if warn is False:
+            warnings.filterwarnings("ignore")
 
     def _path_is_csv_like(self, path: str) -> bool:
         """Check whether the `path` is a path to csv file.
