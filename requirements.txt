@@ -1,8 +1,8 @@
 money-manager
 numpy
-pandas>=1.4.4
-matplotlib>=3.6.2
-importlib-resources>=5.10.0
+pandas==1.5.3
+matplotlib==3.6.2
+importlib-resources==5.10.0
 gspread
 # setuptools>=61.0
 flake8
