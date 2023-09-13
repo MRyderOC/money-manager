@@ -56,12 +56,39 @@ class InstData:
         self.account_name = account_name
         self.table = table
 
+        # Skip generating output data for `base`
+        if institution_name == "base":
+            self.output_df = table
+            self.out_type = self.service_name
+            return
+
         self.create_output_data()
+
+    def __str__(self):
+        """String representation of the InstData object."""
+        has_df = lambda df: df is not None and not df.empty  # noqa: E731
+        out_str = (
+            f"source: {self.source}"
+            f"\ndata_type: {self.data_type.value}"
+            f"\ninstitution_name: {self.institution_name}"
+            f"\nservice_name: {self.service_name}"
+            f"\naccount_name: {self.account_name}"
+            f"\nout_type: {self.out_type}"
+            f"\nhas_sanity_df: {has_df(self.sanity_df)}"
+            f"\nhas_output_df: {has_df(self.output_df)}"
+            f"\noutput_filename: {self._generate_file_name()}"
+        )
+        return out_str
+
+    def show_info(self):
+        """Show the information of the InstData object."""
+        print(self)
 
     def _generate_file_name(self) -> str:
         """Generate a unique file name in the following format:
         ``<INSTITUTION NAME> - <SERVICE NAME> - <ACCOUNT NAME> (<LAST DATE APPEARED IN THE TABLE>)``."""  # noqa: E501
-        last_date = str(self.output_df["Date"].max().date())
+        date_column = "Date" if self.out_type == "expense" else "Datetime"
+        last_date = str(self.output_df[date_column].max().date())
         return (
             f"{self.institution_name} - {self.service_name} -"
             f" {self.account_name} ({last_date})"
@@ -122,7 +149,7 @@ class InstData:
     def _set_out_type(self):
         """Set the `out_type` based on `service_name`."""
         match self.service_name:
-            case "debit": out_type = "balance"
+            case "debit": out_type = "expense"
             case "credit": out_type = "expense"
             case "3rdparty": out_type = "expense"
             case "exchange": out_type = "trade"
