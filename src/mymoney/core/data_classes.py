@@ -56,12 +56,6 @@ class InstData:
         self.account_name = account_name
         self.table = table
 
-        # Skip generating output data for `base`
-        if institution_name == "base":
-            self.output_df = table
-            self.out_type = self.service_name
-            return
-
         self.create_output_data()
 
     def __str__(self):
@@ -163,6 +157,12 @@ class InstData:
 
     def create_output_data(self):
         """Create the output data."""
+        # Skip generating output data for `base`
+        if self.institution_name == "base":
+            self.output_df = self.table
+            self.out_type = self.service_name
+            return
+
         self.sanity_df = self._institution_executer()
         self.output_df = self._output_df_creator(self.sanity_df)
         self._set_out_type()
