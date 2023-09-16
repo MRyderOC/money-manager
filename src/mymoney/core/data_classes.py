@@ -125,6 +125,10 @@ class InstData:
         Returns:
             A DataFrame with the `output_df` schema.
         """
+        if "_new_Date" in sanity_df.columns:
+            sanity_df["_new_Date"] = pd.to_datetime(
+                sanity_df["_new_Date"], format="%Y-%m-%d", utc=True)
+
         new_columns_name_map = {
             col: col[5:]
             for col in sanity_df.columns
