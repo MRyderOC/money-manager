@@ -52,9 +52,7 @@
             "validation_data": {
                 "schema": {
                     "Date": "datetime64_ns",
-                    "Description": "string",
-                    "Amount": "float",
-                    "Category": "string"
+                    "Amount": "float"
                 },
                 "column_values": {
                     "Amount": {"values": "^-?\\d+[.]\\d{1,2}$", "mode": "regex"}
