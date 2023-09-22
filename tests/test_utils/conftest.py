@@ -1,4 +1,5 @@
 import pytest
+import numpy as np
 import pandas as pd
 
 
@@ -24,3 +25,8 @@ def subset_column():
 @pytest.fixture
 def equal_column():
     return ["col1", "col2", "col3", ]
+
+
+@pytest.fixture
+def range_series():
+    return pd.Series(np.arange(3, 13))
