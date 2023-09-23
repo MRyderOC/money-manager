@@ -358,9 +358,6 @@ class DataFrameValidation:
     def __init__(self, pandas_obj):
         self._obj = pandas_obj
 
-        # @pd.api.extensions.register_series_accessor("validate")
-        # class MySerVal(SeriesValidation): ...
-
     def is_shape(
         self,
         shape: Tuple[int, int],
