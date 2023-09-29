@@ -9,6 +9,7 @@ from mymoney.institutions import capitalone
 from mymoney.institutions import cashapp
 from mymoney.institutions import chase
 from mymoney.institutions import citi
+from mymoney.institutions import coinbase
 from mymoney.institutions import discover
 from mymoney.institutions import paypal
 from mymoney.institutions import samsclub
@@ -98,6 +99,7 @@ class InstData:
             case "cashapp": inst_obj = cashapp.CashApp()
             case "chase": inst_obj = chase.Chase()
             case "citi": inst_obj = citi.Citi()
+            case "coinbase": inst_obj = coinbase.Coinbase()
             case "discover": inst_obj = discover.Discover()
             case "paypal": inst_obj = paypal.PayPal()
             case "samsclub": inst_obj = samsclub.SamsClub()
