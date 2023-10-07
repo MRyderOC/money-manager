@@ -109,13 +109,11 @@ class InstData:
                 raise ValueError(
                     f"Institution `{self.institution_name}` is not supported."
                     "\nYou can file an issue and provide more information"
-                    " to add the institution."
-                )
+                    " to add the institution.")
 
         return inst_obj.service_executer(
             service_name=self.service_name, data_type=self.data_type,
-            table=self.table, account_name=self.account_name
-        )
+            table=self.table, account_name=self.account_name)
 
     def _output_df_creator(self, sanity_df: pd.DataFrame) -> pd.DataFrame:
         """Creates a DataFrame aligned with `output_df` schema from `sanity_df`
@@ -143,8 +141,7 @@ class InstData:
         ]
 
         return sanity_df.drop(columns=old_columns).rename(
-            columns=new_columns_name_map
-        )
+            columns=new_columns_name_map)
 
     def _set_out_type(self):
         """Set the `out_type` based on `service_name`."""
@@ -156,8 +153,7 @@ class InstData:
             case _:
                 raise ValueError(
                     "service_name should be one of the following:"
-                    " ['debit', 'credit', '3rdparty', 'exchange']."
-                )
+                    " ['debit', 'credit', '3rdparty', 'exchange'].")
 
         self.out_type = out_type
 

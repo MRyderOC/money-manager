@@ -43,8 +43,8 @@ class Service:
         if not md:
             raise Exception(
                 f"No `{self._service_type.value}`"
-                " service available in inst_meta_data."
-            )
+                " service available in inst_meta_data.")
+
         self._this_meta_data = md
 
     def _data_validation(self, df: pd.DataFrame) -> pd.DataFrame:
@@ -70,8 +70,7 @@ class Service:
             df_validate_instance.has_schema(schema)
         if col_vals:
             df["_new_IsValid"] = df_validate_instance.has_vals(
-                col_vals_dict=col_vals, return_validation_col=True
-            )
+                col_vals_dict=col_vals, return_validation_col=True)
 
         return df
 
@@ -116,8 +115,7 @@ class Service:
         """
         match data_type:
             case DataType.CSV: df = self._csv_cleaning(
-                input_df=table, account_name=account_name
-            )
+                input_df=table, account_name=account_name)
             case DataType.PDF: raise NotImplementedError("Not supported yet!")
             case DataType.ANY: raise NotImplementedError("Not supported yet!")
 
@@ -133,8 +131,7 @@ class Institution:
 
     def __init__(self) -> None:
         self._meta_data = json.loads(
-            files("mymoney").joinpath("meta_data.json").read_text()
-        )
+            files("mymoney").joinpath("meta_data.json").read_text())
         self._this_meta_data = self._meta_data.get(self._this_institution_name)
 
     def service_executer(
@@ -170,12 +167,10 @@ class Institution:
             case _:
                 raise ValueError(
                     "service_name should be one of the following:"
-                    " ['debit', 'credit', '3rdparty', 'exchange']."
-                )
+                    " ['debit', 'credit', '3rdparty', 'exchange'].")
 
         return the_service.data_type_exec(
-            data_type=data_type, table=table, account_name=account_name
-        )
+            data_type=data_type, table=table, account_name=account_name)
 
     class CreditService(Service):
         """Prototype class for Credit Service."""

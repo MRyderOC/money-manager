@@ -210,6 +210,41 @@
             }
         }
     },
+    "coinbase": {
+        "exchange": {
+            "columns": [
+                "Timestamp",
+                "Transaction Type",
+                "Asset",
+                "Quantity Transacted",
+                "Spot Price Currency",
+                "Spot Price at Transaction",
+                "Subtotal",
+                "Total (inclusive of fees and/or spread)",
+                "Fees and/or Spread",
+                "Notes"
+            ],
+            "read_args": {
+                "header": 3,
+                "parse_dates": ["Timestamp"],
+                "names": null
+            },
+            "validation_data": {
+                "schema": {
+                    "Timestamp": "datetime64_ns",
+                    "Quantity Transacted": "float",
+                    "Spot Price at Transaction": "float",
+                    "Subtotal": "float",
+                    "Total (inclusive of fees and/or spread)": "float",
+                    "Fees and/or Spread": "float"
+                },
+                "column_values": {
+                    "Spot Price Currency" : {"values": ["USD"], "mode": "equal"},
+                    "Transaction Type": {"values": ["Send", "Buy", "Learning Reward", "Convert", "Receive", "Rewards Income", "Sell"], "mode": "superset"}
+                }
+            }
+        }
+    },
     "discover": {
         "credit": {
             "columns": [
