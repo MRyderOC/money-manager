@@ -34,3 +34,16 @@ def test_is_shape(dataframe_creator):
     df_val = DataFrameValidation(dataframe_creator)
     with pytest.raises(Exception):
         df_val.is_shape((3, 4), raises=True)
+
+
+def test_has_dtypes(dataframe_with_different_types):
+    df_val = DataFrameValidation(dataframe_with_different_types)
+    df_val.has_dtypes({
+        "series_int": "int",
+        "series_string": "string",
+        "series_bool": "bool",
+        "series_float": "float",
+        "series_complex": "complex",
+        "series_datetime": "datetime",
+        "series_timedelta": "timedelta64",
+    })

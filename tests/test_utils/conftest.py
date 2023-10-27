@@ -44,7 +44,7 @@ def series_bool():
 
 @pytest.fixture
 def series_float():
-    return pd.Series(np.arange(.1, 1, .1))
+    return pd.Series(np.arange(0, 1, .1))
 
 
 @pytest.fixture
@@ -60,3 +60,24 @@ def series_datetime():
 @pytest.fixture
 def series_timedelta():
     return pd.Series([pd.Timedelta(days=i, hours=i) for i in range(10)])
+
+
+@pytest.fixture
+def dataframe_with_different_types(
+    series_int,
+    series_string,
+    series_bool,
+    series_float,
+    series_complex,
+    series_datetime,
+    series_timedelta,
+):
+    return pd.DataFrame({
+        "series_int": series_int,
+        "series_string": series_string,
+        "series_bool": series_bool,
+        "series_float": series_float,
+        "series_complex": series_complex,
+        "series_datetime": series_datetime,
+        "series_timedelta": series_timedelta,
+    })
