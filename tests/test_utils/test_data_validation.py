@@ -38,7 +38,7 @@ def test_is_shape(dataframe_creator):
 
 def test_has_dtypes(dataframe_with_different_types):
     df_val = DataFrameValidation(dataframe_with_different_types)
-    dtpes_map_correct = {
+    dtypes_map_correct = {
         "series_int": "int",
         "series_string": "string",
         "series_bool": "bool",
@@ -47,9 +47,9 @@ def test_has_dtypes(dataframe_with_different_types):
         "series_datetime": "datetime",
         "series_timedelta": "timedelta64",
     }
-    df_val.has_dtypes(dtpes_map_correct)
+    df_val.has_dtypes(dtypes_map_correct)
 
-    dtpes_map_false = {
+    dtypes_map_false = {
         "series_int": "float",
         "series_string": "string",
         "series_bool": "bool",
@@ -59,4 +59,4 @@ def test_has_dtypes(dataframe_with_different_types):
         "series_timedelta": "timedelta64",
     }
     with pytest.raises(Exception):
-        df_val.has_dtypes(dtpes_map_false, raises=True)
+        df_val.has_dtypes(dtypes_map_false, raises=True)
