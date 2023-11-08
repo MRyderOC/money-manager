@@ -60,3 +60,29 @@ def test_has_dtypes(dataframe_with_different_types):
     }
     with pytest.raises(Exception):
         df_val.has_dtypes(dtypes_map_false, raises=True)
+
+
+def test_has_schema(dataframe_with_different_types):
+    df_val = DataFrameValidation(dataframe_with_different_types)
+    schema_map_correct = {
+        "series_int": "int",
+        "series_string": "string",
+        "series_bool": "bool",
+        "series_float": "float",
+        "series_complex": "complex",
+        "series_datetime": "datetime",
+        "series_timedelta": "timedelta64",
+    }
+    df_val.has_schema(schema_map_correct)
+
+    schema_map_false = {
+        "series_int": "float",
+        "series_string": "string",
+        "series_bool": "bool",
+        "series_float": "int",
+        "series_complex": "complex",
+        "series_datetime": "datetime",
+        "series_timedelta": "timedelta64",
+    }
+    with pytest.raises(Exception):
+        df_val.has_schema(schema_map_false, raises=True)
