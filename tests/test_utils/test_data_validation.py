@@ -4,6 +4,8 @@ from mymoney.utils.data_validation import SeriesValidation  # noqa: F401
 from mymoney.utils.data_validation import DataFrameValidation  # noqa: F401
 
 
+# SeriesValidation related tests
+
 def test_has_dtype(
     series_bool, series_string,
     series_int, series_float, series_complex,
@@ -25,11 +27,17 @@ def test_has_dtype(
         series_int.validate.has_dtype("datetime", raises=True)
 
 
-def test_has_no_x(range_series):
-    assert range_series.validate._check_no_x([1, 2, "a"]) is True
-    assert range_series.validate._check_no_x([3, 4]) == [0, 1]
+def test_has_no_x(series_int):
+    assert series_int.validate._check_no_x([1, 2, "a"]) is True
+    assert series_int.validate._check_no_x([3, 4]) == [0, 1]
 
 
+def test_has_vals(series_int):
+    assert series_int.validate._check_vals((1, 15), "range") is True
+    assert series_int.validate._check_vals((5, 10), "range").get("idxs") == [0, 1, 8, 9]
+
+
+# DataFrameValidation related tests
 def test_is_shape(dataframe_creator):
     df_val = DataFrameValidation(dataframe_creator)
     with pytest.raises(Exception):
