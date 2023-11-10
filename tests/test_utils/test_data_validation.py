@@ -39,11 +39,21 @@ def test_has_vals_range(series_int):
         series_int.validate.has_vals((5, 10), "range", raises=True)
 
 
-def test_has_vals_regex(series_string2):
+def test_has_vals_regex(series_string, series_string2):
+    assert series_string.validate._check_vals(r"a*", "regex") is True
+    assert series_string.validate._check_vals(r"aa+", "regex").get("idxs") == [0, 1]
     assert series_string2.validate._check_vals(r"[a-z]", "regex") is True
     assert series_string2.validate._check_vals(r"[a-y]", "regex").get("idxs") == [25]
     with pytest.raises(Exception):
+        series_string.validate.has_vals(r"aa+", "regex", raises=True)
         series_string2.validate.has_vals(r"[a-y]", "regex", raises=True)
+
+
+def test_has_vals_equal(series_bool):
+    assert series_bool.validate._check_vals([True, False], "equal") is True
+    assert series_bool.validate._check_vals([True], "equal").get("idxs") == [2, 4, 7, 9]
+    with pytest.raises(Exception):
+        series_bool.validate.has_vals([True], "equal", raises=True)
 
 
 # DataFrameValidation related tests
