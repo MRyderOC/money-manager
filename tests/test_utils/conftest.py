@@ -1,3 +1,5 @@
+from string import ascii_lowercase
+
 import pytest
 import numpy as np
 import pandas as pd
@@ -35,6 +37,11 @@ def series_int():
 @pytest.fixture
 def series_string():
     return pd.Series(["a" * i for i in range(10)])
+
+
+@pytest.fixture
+def series_string2():
+    return pd.Series([s for s in ascii_lowercase])
 
 
 @pytest.fixture
