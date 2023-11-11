@@ -56,6 +56,19 @@ def test_has_vals_equal(series_bool):
         series_bool.validate.has_vals([True], "equal", raises=True)
 
 
+def test_has_vals_subset(series_bool, series_string, series_string2):
+    assert series_bool.validate._check_vals([True], "subset") is True
+    assert series_bool.validate._check_vals([True, None], "subset").get("extra_vals") == [None]
+    assert series_string.validate._check_vals(["a", "aa", "aaa"], "subset") is True
+    assert series_string.validate._check_vals(["a", "aa", "b"], "subset").get("extra_vals") == ["b"]
+    assert series_string2.validate._check_vals(["a", "b", "c"], "subset") is True
+    assert series_string2.validate._check_vals(["a", "b", "qq"], "subset").get("extra_vals") == ["qq"]
+    with pytest.raises(Exception):
+        series_bool.validate.has_vals([True, False, None], "subset", raises=True)
+        series_bool.validate.has_vals(["a", "aa", "b"], "subset", raises=True)
+        series_bool.validate.has_vals(["a", "b", "qq"], "subset", raises=True)
+
+
 # DataFrameValidation related tests
 def test_is_shape(dataframe_creator):
     df_val = DataFrameValidation(dataframe_creator)
