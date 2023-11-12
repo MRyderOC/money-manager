@@ -1,3 +1,5 @@
+from string import ascii_lowercase
+
 import pytest
 
 from mymoney.utils.data_validation import SeriesValidation  # noqa: F401
@@ -65,8 +67,21 @@ def test_has_vals_subset(series_bool, series_string, series_string2):
     assert series_string2.validate._check_vals(["a", "b", "qq"], "subset").get("extra_vals") == ["qq"]
     with pytest.raises(Exception):
         series_bool.validate.has_vals([True, False, None], "subset", raises=True)
-        series_bool.validate.has_vals(["a", "aa", "b"], "subset", raises=True)
-        series_bool.validate.has_vals(["a", "b", "qq"], "subset", raises=True)
+        series_string.validate.has_vals(["a", "aa", "b"], "subset", raises=True)
+        series_string2.validate.has_vals(["a", "b", "qq"], "subset", raises=True)
+
+
+def test_has_vals_superset(series_bool, series_string, series_int):
+    assert series_bool.validate._check_vals([True, False, None], "superset") is True
+    assert series_bool.validate._check_vals([True, None], "superset").get("idxs") == [2, 4, 7, 9]
+    assert series_string.validate._check_vals(["a" * i for i in range(20)], "superset") is True
+    assert series_string.validate._check_vals(["a" * i for i in range(8)], "superset").get("idxs") == [8, 9]
+    assert series_int.validate._check_vals([i for i in range(15)], "superset") is True
+    assert series_int.validate._check_vals([i for i in range(5, 10)], "superset").get("idxs") == [0, 1, 7, 8, 9]
+    with pytest.raises(Exception):
+        series_bool.validate.has_vals([True, False, None], "superset", raises=True)
+        series_string.validate.has_vals(["a" * i for i in range(8)], "superset", raises=True)
+        series_int.validate.has_vals([i for i in range(5, 10)], "superset", raises=True)
 
 
 # DataFrameValidation related tests
