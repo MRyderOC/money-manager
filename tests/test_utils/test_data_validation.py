@@ -1,5 +1,3 @@
-from string import ascii_lowercase
-
 import pytest
 
 from mymoney.utils.data_validation import SeriesValidation  # noqa: F401
