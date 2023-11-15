@@ -131,8 +131,9 @@ class SeriesValidation:
                     'range' -> the Series are in the range of `values`,
                     'regex' -> values of the Series have the `values`
                         regex pattern,
-                    ('n_std' or 'n-std' or 'n std') -> values of the Series
-                        are within `values` standard deviation of the mean,
+                    ('n_std' or 'n-std' or 'n std', 'nstd') -> values of
+                        the Series are within `values` standard deviation
+                        of the mean,
                     'equal' -> values of the Series are exactly like `values`,
                     'subset' -> `values` is subset of values in the Series,
                     'superset' -> `values` is superset of values in the Series,
@@ -168,7 +169,7 @@ class SeriesValidation:
             if not new_ser.all():
                 return {"idxs": self._find_faulty_indexes(new_ser)}
             return True
-        elif mode in ["n_std", "n-std", "n std"]:
+        elif mode in ["n_std", "n-std", "n std", "nstd"]:
             # Type error checking
             if not pd.api.types.is_numeric_dtype(to_check_ser):
                 raise Exception("This series does not contain numeric values.")
@@ -297,8 +298,9 @@ class SeriesValidation:
                     'range' -> the Series are in the range of `values`,
                     'regex' -> values of the Series have the `values`
                         regex pattern,
-                    ('n_std' or 'n-std' or 'n std') -> values of the Series
-                        are within `values` standard deviation of the mean,
+                    ('n_std' or 'n-std' or 'n std', 'nstd') -> values of
+                        the Series are within `values` standard deviation
+                        of the mean,
                     'equal' -> values of the Series are exactly like `values`,
                     'subset' -> `values` is subset of values in the Series,
                     'superset' -> `values` is superset of values in the Series,
@@ -325,7 +327,7 @@ class SeriesValidation:
                     " the regex `{values}`."
                     f"\nThe indexes: {error_dict['idxs']}"
                 )
-            elif mode in ["n_std", "n-std", "n std"]:
+            elif mode in ["n_std", "n-std", "n std", "nstd"]:
                 msg = (
                     "Some of the values of this series are not within"
                     f" `{values}` of standard deviations."
