@@ -34,16 +34,19 @@ def test_has_no_x(series_int):
 
 def test_has_vals_range(series_int):
     assert series_int.validate._check_vals((1, 15), "range") is True
-    assert series_int.validate._check_vals((5, 10), "range").get("idxs") == [0, 1, 8, 9]
+    assert series_int.validate._check_vals(
+        (5, 10), "range").get("idxs") == [0, 1, 8, 9]
     with pytest.raises(Exception):
         series_int.validate.has_vals((5, 10), "range", raises=True)
 
 
 def test_has_vals_regex(series_string, series_string2):
     assert series_string.validate._check_vals(r"a*", "regex") is True
-    assert series_string.validate._check_vals(r"aa+", "regex").get("idxs") == [0, 1]
+    assert series_string.validate._check_vals(
+        r"aa+", "regex").get("idxs") == [0, 1]
     assert series_string2.validate._check_vals(r"[a-z]", "regex") is True
-    assert series_string2.validate._check_vals(r"[a-y]", "regex").get("idxs") == [25]
+    assert series_string2.validate._check_vals(
+        r"[a-y]", "regex").get("idxs") == [25]
     with pytest.raises(Exception):
         series_string.validate.has_vals(r"aa+", "regex", raises=True)
         series_string2.validate.has_vals(r"[a-y]", "regex", raises=True)
@@ -51,35 +54,53 @@ def test_has_vals_regex(series_string, series_string2):
 
 def test_has_vals_equal(series_bool):
     assert series_bool.validate._check_vals([True, False], "equal") is True
-    assert series_bool.validate._check_vals([True], "equal").get("idxs") == [2, 4, 7, 9]
+    assert series_bool.validate._check_vals(
+        [True], "equal").get("idxs") == [2, 4, 7, 9]
     with pytest.raises(Exception):
         series_bool.validate.has_vals([True], "equal", raises=True)
 
 
 def test_has_vals_subset(series_bool, series_string, series_string2):
     assert series_bool.validate._check_vals([True], "subset") is True
-    assert series_bool.validate._check_vals([True, None], "subset").get("extra_vals") == [None]
-    assert series_string.validate._check_vals(["a", "aa", "aaa"], "subset") is True
-    assert series_string.validate._check_vals(["a", "aa", "b"], "subset").get("extra_vals") == ["b"]
-    assert series_string2.validate._check_vals(["a", "b", "c"], "subset") is True
-    assert series_string2.validate._check_vals(["a", "b", "qq"], "subset").get("extra_vals") == ["qq"]
+    assert series_bool.validate._check_vals(
+        [True, None], "subset").get("extra_vals") == [None]
+    assert series_string.validate._check_vals(
+        ["a", "aa", "aaa"], "subset") is True
+    assert series_string.validate._check_vals(
+        ["a", "aa", "b"], "subset").get("extra_vals") == ["b"]
+    assert series_string2.validate._check_vals(
+        ["a", "b", "c"], "subset") is True
+    assert series_string2.validate._check_vals(
+        ["a", "b", "qq"], "subset").get("extra_vals") == ["qq"]
     with pytest.raises(Exception):
-        series_bool.validate.has_vals([True, False, None], "subset", raises=True)
-        series_string.validate.has_vals(["a", "aa", "b"], "subset", raises=True)
-        series_string2.validate.has_vals(["a", "b", "qq"], "subset", raises=True)
+        series_bool.validate.has_vals(
+            [True, False, None], "subset", raises=True)
+        series_string.validate.has_vals(
+            ["a", "aa", "b"], "subset", raises=True)
+        series_string2.validate.has_vals(
+            ["a", "b", "qq"], "subset", raises=True)
 
 
 def test_has_vals_superset(series_bool, series_string, series_int):
-    assert series_bool.validate._check_vals([True, False, None], "superset") is True
-    assert series_bool.validate._check_vals([True, None], "superset").get("idxs") == [2, 4, 7, 9]
-    assert series_string.validate._check_vals(["a" * i for i in range(20)], "superset") is True
-    assert series_string.validate._check_vals(["a" * i for i in range(8)], "superset").get("idxs") == [8, 9]
-    assert series_int.validate._check_vals([i for i in range(15)], "superset") is True
-    assert series_int.validate._check_vals([i for i in range(5, 10)], "superset").get("idxs") == [0, 1, 7, 8, 9]
+    assert series_bool.validate._check_vals(
+        [True, False, None], "superset") is True
+    assert series_bool.validate._check_vals(
+        [True, None], "superset").get("idxs") == [2, 4, 7, 9]
+    assert series_string.validate._check_vals(
+        ["a" * i for i in range(20)], "superset") is True
+    assert series_string.validate._check_vals(
+        ["a" * i for i in range(8)], "superset").get("idxs") == [8, 9]
+    assert series_int.validate._check_vals(
+        [i for i in range(15)], "superset") is True
+    assert series_int.validate._check_vals(
+        [i for i in range(5, 10)], "superset").get("idxs") == [0, 1, 7, 8, 9]
     with pytest.raises(Exception):
-        series_bool.validate.has_vals([True, False, None], "superset", raises=True)
-        series_string.validate.has_vals(["a" * i for i in range(8)], "superset", raises=True)
-        series_int.validate.has_vals([i for i in range(5, 10)], "superset", raises=True)
+        series_bool.validate.has_vals(
+            [True, False, None], "superset", raises=True)
+        series_string.validate.has_vals(
+            ["a" * i for i in range(8)], "superset", raises=True)
+        series_int.validate.has_vals(
+            [i for i in range(5, 10)], "superset", raises=True)
 
 
 # DataFrameValidation related tests
