@@ -52,6 +52,12 @@ def test_has_vals_regex(series_string, series_string2):
         series_string2.validate.has_vals(r"[a-y]", "regex", raises=True)
 
 
+def test_has_vals_nstd(series_int, series_float):
+    assert series_int.validate._check_vals(7, "nstd") is True
+    assert series_int.validate._check_vals(6, "nstd") is True
+    assert series_float.validate._check_vals(2, "nstd") is True
+
+
 def test_has_vals_equal(series_bool):
     assert series_bool.validate._check_vals([True, False], "equal") is True
     assert series_bool.validate._check_vals(
