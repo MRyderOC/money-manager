@@ -56,6 +56,11 @@ def test_has_vals_nstd(series_int, series_float):
     assert series_int.validate._check_vals(7, "nstd") is True
     assert series_int.validate._check_vals(6, "nstd") is True
     assert series_float.validate._check_vals(2, "nstd") is True
+    assert series_int.validate._check_vals(
+        1, "nstd").get("idxs") == [0, 1, 8, 9]
+
+    with pytest.raises(Exception):
+        series_int.validate.has_vals(1, "nstd", raises=True)
 
 
 def test_has_vals_equal(series_bool):
