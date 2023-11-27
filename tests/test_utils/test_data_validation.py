@@ -1,7 +1,7 @@
 import pytest
 
 from mymoney.utils.data_validation import SeriesValidation  # noqa: F401
-from mymoney.utils.data_validation import DataFrameValidation  # noqa: F401
+from mymoney.utils.data_validation import DataFrameValidation
 
 
 # SeriesValidation related tests
