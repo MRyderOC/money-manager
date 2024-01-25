@@ -4,6 +4,7 @@ pandas==1.5.3
 matplotlib==3.6.2
 importlib-resources==5.10.0
 gspread
+gspread-dataframe
 # setuptools>=61.0
 flake8
 pytest==7.4.2
