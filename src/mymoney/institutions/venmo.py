@@ -52,10 +52,15 @@ class Venmo(institution_base.Institution):
                 else:
                     return "consider"
 
-            def amount_finder(val):
-                return float(
-                    str(val).replace(" $", "").replace(",", "")
-                )
+            def amount_finder(row):
+                float_amount = float(
+                    str(row["Amount (total)"])
+                    .replace(" $", "").replace(",", ""))
+
+                if row["Type"] == "Credit Card Payment":
+                    return -float_amount
+                else:
+                    return float_amount
 
             def description_finder(row):
                 row_type = row["Type"]
@@ -78,7 +83,7 @@ class Venmo(institution_base.Institution):
                 return out.strip()
 
             input_df["_new_Description"] = input_df.apply(description_finder, axis=1)  # noqa: E501
-            input_df["_new_Amount"] = input_df["Amount (total)"].map(amount_finder)  # noqa: E501
+            input_df["_new_Amount"] = input_df.apply(amount_finder, axis=1)
             input_df["_new_Date"] = input_df["Datetime"].copy(deep=True)
             input_df["_new_InstitutionCategory"] = np.nan
             input_df["_new_MyCategory"] = np.nan
