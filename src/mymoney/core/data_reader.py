@@ -51,7 +51,7 @@ class DataReader:
         return False
 
     def _read_wellsfargo_csv(
-            self, path: str, account_name: str, read_args: Dict[str, Any]
+        self, path: str, account_name: str, read_args: Dict[str, Any]
     ) -> InstData:
         """Read the CSV data from `path` and returns a InstData. This method
         is specialized for WellsFargo CSV files since they need special care.
@@ -115,7 +115,7 @@ class DataReader:
         )
 
     def read_csv(
-            self, path: str, account_name: str = None, logs: bool = False
+        self, path: str, account_name: str = None, logs: bool = False
     ) -> InstData:
         """Read the data from `path` and returns a InstData.
 
