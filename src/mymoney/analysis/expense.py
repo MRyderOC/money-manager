@@ -17,7 +17,7 @@ logging.basicConfig(
 class ExpenseAnalysis:
     """Main class for Expense analysis."""
 
-    _new_expense_columns = [
+    _expense_columns = [
         "Description", "Amount", "Date",
         "Institution", "AccountName",
         "InstitutionCategory", "MyCategory",
@@ -30,6 +30,12 @@ class ExpenseAnalysis:
     }
 
     def __init__(self, df: pd.DataFrame) -> None:
+        if df.empty:
+            raise ValueError(
+                "The `df` should not be empty. Please load a valid DataFrame.")
+        column_name_checker(df, self._expense_columns)
+
+        self._whole_df = df.copy(deep=True)
         self._expense_df = df[df["IsTransfer"] == "expense"]
         self._transfer_df = df[df["IsTransfer"] == "transfer"]
         self._redundant_df = df[df["IsTransfer"] == "redundant"]
@@ -70,7 +76,6 @@ class ExpenseAnalysis:
             A dictionary with the column's unique values as keys
             and the aggregated data as values.
         """
-        column_name_checker(self._expense_df, self._new_expense_columns)
         self._timeline_error_check(freq)
 
         out_dict = {}
