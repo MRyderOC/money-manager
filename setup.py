@@ -17,7 +17,7 @@ setup(
     author="Milad Tabrizi",
     author_email="milad@miladtabrizi.com",
     license="GPLv3+",
-    package_dir={"":"src"},
+    package_dir={"": "src"},
     packages=find_packages(where="src"),
     include_package_data=True,
     python_requires=">=3.7, <4",
