@@ -51,10 +51,8 @@ class Citi(institution_base.Institution):
                 except Exception:
                     return "consider"
 
-                if regex_flag:
+                if regex_flag or np.isnan(row["Debit"]):
                     return -row["Credit"]
-                elif np.isnan(row["Debit"]):
-                    return row["Credit"]
                 else:
                     return -row["Debit"]
 

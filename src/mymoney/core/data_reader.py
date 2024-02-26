@@ -99,9 +99,10 @@ class DataReader:
 
         input_df = pd.read_csv(filepath_or_buffer=path, **read_args)
 
+        # TODO: Bug prone - If regex pattern `r"PAYMENT\s?-? THANK"`
+        # not present in the "Credit" CSV, this condition will fail
         wf_service_cond = any(
-            input_df["Description"].str.contains(r"PAYMENT\s?-? THANK")
-        )
+            input_df["Description"].str.contains(r"PAYMENT\s?-? THANK"))
         wf_service = "credit" if wf_service_cond else "debit"
 
         logging.info(f"Completed: wellsfargo/{wf_service} - {account_name}")
