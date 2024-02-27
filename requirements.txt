@@ -8,3 +8,5 @@ gspread-dataframe
 # setuptools>=61.0
 flake8
 pytest==7.4.2
+ipykernel
+ipywidgets
