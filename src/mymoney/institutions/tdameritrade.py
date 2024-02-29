@@ -16,7 +16,7 @@ logging.basicConfig(
 class TDAmeriTrade(institution_base.Institution):
     """A class for TD AmeriTrade institution's data cleaning functions."""
 
-    _this_institution_name = "tdameritrtade"
+    _this_institution_name = "tdameritrade"
 
     def __init__(self) -> None:
         super().__init__()
