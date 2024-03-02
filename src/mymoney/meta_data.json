@@ -367,6 +367,48 @@
             }
         }
     },
+    "uphold": {
+        "exchange": {
+            "columns": [
+                "Date",
+                "Destination",
+                "Destination Amount",
+                "Destination Currency",
+                "Fee Amount",
+                "Fee Currency",
+                "Id",
+                "Origin",
+                "Origin Amount",
+                "Origin Currency",
+                "Status",
+                "Type"
+            ],
+            "read_args": {
+                "header": 0,
+                "parse_dates": ["Date"],
+                "names": null
+            },
+            "validation_data": {
+                "schema": {
+                    "Date": "datetime64_ns",
+                    "Destination Amount": "float",
+                    "Fee Amount": "float",
+                    "Origin Amount": "float"
+                },
+                "column_values": {
+                    "Destination": {"values": ["uphold", "bank", "ethereum"], "mode": "superset"},
+                    "Destination Amount": {"values": "^\\d+(\\.\\d+)*$", "mode": "regex"},
+                    "Destination Currency": {"values": "^[A-Z]{1,5}$", "mode": "regex"},
+                    "Fee Currency": {"values": "^[A-Z]{1,5}$", "mode": "regex", "na_action": "ignore"},
+                    "Origin": {"values": ["uphold", "bank"], "mode": "superset"},
+                    "Origin Amount": {"values": "^\\d+(\\.\\d+)*$", "mode": "regex"},
+                    "Origin Currency": {"values": "^[A-Z]{1,5}$", "mode": "regex"},
+                    "Status": {"values": ["completed"], "mode": "equal"},
+                    "Type": {"values": ["in", "transfer", "out"], "mode": "superset"}
+                }
+            }
+        }
+    },
     "venmo": {
         "3rdparty": {
             "columns": [

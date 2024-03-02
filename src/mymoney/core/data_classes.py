@@ -14,6 +14,7 @@ from mymoney.institutions import cryptodotcom
 from mymoney.institutions import discover
 from mymoney.institutions import paypal
 from mymoney.institutions import samsclub
+from mymoney.institutions import uphold
 from mymoney.institutions import venmo
 from mymoney.institutions import wellsfargo
 
@@ -105,6 +106,7 @@ class InstData:
             case "discover": inst_obj = discover.Discover()
             case "paypal": inst_obj = paypal.PayPal()
             case "samsclub": inst_obj = samsclub.SamsClub()
+            case "uphold": inst_obj = uphold.Uphold()
             case "venmo": inst_obj = venmo.Venmo()
             case "wellsfargo": inst_obj = wellsfargo.WellsFargo()
             case _:
