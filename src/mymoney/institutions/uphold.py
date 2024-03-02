@@ -100,8 +100,11 @@ class Uphold(institution_base.Institution):
 
             def trx_sub_type_finder(row):
                 trx_type = row["_new_TrxType"]
-                from_asset, to_asset = row["_new_FromAsset"], row["_new_ToAsset"]
-                from_acc, to_acc = row["_new_FromAccount"], row["_new_ToAccount"]
+                from_asset = row["_new_FromAsset"]
+                to_asset = row["_new_ToAsset"]
+                from_acc = row["_new_FromAccount"]
+                to_acc = row["_new_ToAccount"]
+
                 if trx_type == "Trade":
                     if from_asset in self._USDs:
                         return "Buy"
@@ -132,8 +135,11 @@ class Uphold(institution_base.Institution):
                     return np.nan
 
             def usd_amount_finder(row):
-                from_asset, to_asset = row["_new_FromAsset"], row["_new_ToAsset"]
-                in_amount, out_amount = row["_new_InAmount"], row["_new_OutAmount"]
+                from_asset = row["_new_FromAsset"]
+                to_asset = row["_new_ToAsset"]
+                in_amount = row["_new_InAmount"]
+                out_amount = row["_new_OutAmount"]
+
                 if from_asset in self._USDs and to_asset in self._USDs:
                     return max(in_amount, out_amount)
                 elif from_asset in self._USDs:
@@ -143,19 +149,19 @@ class Uphold(institution_base.Institution):
                 else:
                     return np.nan
 
-            input_df["_new_Datetime"] = pd.to_datetime(input_df["Date"], utc=True)
-            input_df["_new_FromAccount"] = input_df.apply(from_account_finder, axis=1)
-            input_df["_new_ToAccount"] = input_df["Destination"].map(to_account_finder)
-            input_df["_new_FromAsset"] = input_df.apply(from_asset_finder, axis=1)
+            input_df["_new_Datetime"] = pd.to_datetime(input_df["Date"], utc=True)  # noqa: E501
+            input_df["_new_FromAccount"] = input_df.apply(from_account_finder, axis=1)  # noqa: E501
+            input_df["_new_ToAccount"] = input_df["Destination"].map(to_account_finder)  # noqa: E501
+            input_df["_new_FromAsset"] = input_df.apply(from_asset_finder, axis=1)  # noqa: E501
             input_df["_new_ToAsset"] = input_df["Destination Currency"]
-            input_df["_new_InAmount"] = input_df.apply(in_amount_finder, axis=1)
+            input_df["_new_InAmount"] = input_df.apply(in_amount_finder, axis=1)  # noqa: E501
             input_df["_new_OutAmount"] = input_df["Destination Amount"]
             input_df["_new_FeeAsset"] = input_df["Fee Currency"].fillna("USD")
             input_df["_new_FeeAmount"] = input_df["Fee Amount"].fillna(.0)
-            input_df["_new_FeeValue"] = input_df["Fee Amount"].map(fee_value_finder)
+            input_df["_new_FeeValue"] = input_df["Fee Amount"].map(fee_value_finder)  # noqa: E501
             input_df["_new_TrxType"] = input_df.apply(trx_type_finder, axis=1)
-            input_df["_new_TrxSubType"] = input_df.apply(trx_sub_type_finder, axis=1)
+            input_df["_new_TrxSubType"] = input_df.apply(trx_sub_type_finder, axis=1)  # noqa: E501
             input_df["_new_AssetType"] = "Crypto"
-            # input_df["_new_USDAmount"] = input_df.apply(usd_amount_finder, axis=1)
+            # input_df["_new_USDAmount"] = input_df.apply(usd_amount_finder, axis=1)  # noqa: E501
 
             return input_df
