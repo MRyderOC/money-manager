@@ -51,6 +51,7 @@ class CryptoDotCom(institution_base.Institution):
                 elif val == "crypto_purchase":
                     return "Bank"
                 elif val == "crypto_deposit":
+                    # Alternative: f'{row["ToAsset"]} Network'
                     return "Wallet"
                 else:
                     return np.nan
@@ -67,6 +68,7 @@ class CryptoDotCom(institution_base.Institution):
                 ]:
                     return "cryptodotcom"
                 elif val == "crypto_withdrawal":
+                    # Alternative: f'{row["ToAsset"]} Network'
                     return "Wallet"
                 else:
                     return np.nan

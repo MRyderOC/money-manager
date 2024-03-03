@@ -49,6 +49,7 @@ class Coinbase(institution_base.Institution):
                 elif val == "Learning Reward":
                     return "Coinbase Reward"
                 elif val == "Receive":
+                    # Alternative: f'{row["ToAsset"]} Network'
                     return "Wallet"
                 else:
                     return np.nan
