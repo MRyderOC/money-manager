@@ -172,11 +172,3 @@ class InstData:
         self.sanity_df = self._institution_executer()
         self.output_df = self._output_df_creator(self.sanity_df)
         self._set_out_type()
-
-
-@dataclasses.dataclass
-class MyData:
-    """Main class for storing MyMoney core data and analysis."""
-    expense: pd.DataFrame
-    trade: pd.DataFrame
-    balance: pd.DataFrame
