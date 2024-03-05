@@ -87,6 +87,29 @@ class ExpenseAnalysis:
 
         return out_dict
 
+    def get_unique_categories(self):
+        return pd.DataFrame({
+            "MyCategory": self._whole_df["MyCategory"].unique()
+        })
+
+    def get_last_date_df(self):
+        last_date_cols = ["Institution", "AccountName", "Service", "LastDate"]
+        last_date_df = pd.DataFrame(columns=last_date_cols)
+
+        grouped_by_list = ["Institution", "AccountName", "Service"]
+        grouped = self._expense_df.groupby(by=grouped_by_list)
+        for name, grp in grouped:
+            last_date = grp["Date"].max().date()
+            tmp_df = pd.DataFrame({
+                "Institution": [name[0]],
+                "AccountName": [name[1]],
+                "Service": [name[2]],
+                "LastDate": [last_date],
+            })
+            last_date_df = pd.concat([last_date_df, tmp_df], ignore_index=True)
+
+        return last_date_df
+
     def category_spend(self, freq: str = "M") -> Dict[str, pd.Series]:
         """Create an aggregated data for expense categories.
 
