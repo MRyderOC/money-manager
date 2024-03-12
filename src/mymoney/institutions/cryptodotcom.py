@@ -168,8 +168,8 @@ class CryptoDotCom(institution_base.Institution):
             input_df["_new_ToAsset"] = input_df.apply(to_asset_finder, axis=1)  # noqa: E501
             input_df["_new_InAmount"] = input_df.apply(in_amount_finder, axis=1)  # noqa: E501
             input_df["_new_OutAmount"] = input_df.apply(out_amount_finder, axis=1)  # noqa: E501
-            input_df["_new_FeeAmount"] = .0
             input_df["_new_FeeAsset"] = "USD"
+            input_df["_new_FeeAmount"] = .0
             input_df["_new_FeeValue"] = .0
             input_df["_new_TrxType"] = input_df["Transaction Kind"].map(trx_type_mapping)  # noqa: E501
             input_df["_new_TrxSubType"] = input_df.apply(trx_sub_type_finder, axis=1)  # noqa: E501
