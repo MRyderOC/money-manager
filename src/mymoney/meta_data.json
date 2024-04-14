@@ -264,7 +264,7 @@
                 "Notes"
             ],
             "read_args": {
-                "header": 3,
+                "header": 2,
                 "parse_dates": ["Timestamp"],
                 "names": null
             },
@@ -279,7 +279,7 @@
                 },
                 "column_values": {
                     "Spot Price Currency" : {"values": ["USD"], "mode": "equal"},
-                    "Transaction Type": {"values": ["Send", "Buy", "Learning Reward", "Convert", "Receive", "Rewards Income", "Sell"], "mode": "superset"}
+                    "Transaction Type": {"values": ["Send", "Buy", "Learning Reward", "Convert", "Receive", "Inflation Reward", "Staking Income", "Withdrawal", "Sell"], "mode": "superset"}
                 }
             }
         }
