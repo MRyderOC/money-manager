@@ -51,7 +51,7 @@ class DataReader:
         return False
 
     def _read_wellsfargo_csv(
-            self, path: str, account_name: str, read_args: Dict[str, Any]
+        self, path: str, account_name: str, read_args: Dict[str, Any]
     ) -> InstData:
         """Read the CSV data from `path` and returns a InstData. This method
         is specialized for WellsFargo CSV files since they need special care.
@@ -99,9 +99,10 @@ class DataReader:
 
         input_df = pd.read_csv(filepath_or_buffer=path, **read_args)
 
+        # TODO: Bug prone - If regex pattern `r"PAYMENT\s?-? THANK"`
+        # not present in the "Credit" CSV, this condition will fail
         wf_service_cond = any(
-            input_df["Description"].str.contains(r"PAYMENT\s?-? THANK")
-        )
+            input_df["Description"].str.contains(r"PAYMENT\s?-? THANK"))
         wf_service = "credit" if wf_service_cond else "debit"
 
         logging.info(f"Completed: wellsfargo/{wf_service} - {account_name}")
@@ -115,7 +116,7 @@ class DataReader:
         )
 
     def read_csv(
-            self, path: str, account_name: str = None, logs: bool = False
+        self, path: str, account_name: str = None, logs: bool = False
     ) -> InstData:
         """Read the data from `path` and returns a InstData.
 

@@ -17,7 +17,7 @@ logging.basicConfig(
 class ExpenseAnalysis:
     """Main class for Expense analysis."""
 
-    _new_expense_columns = [
+    _expense_columns = [
         "Description", "Amount", "Date",
         "Institution", "AccountName",
         "InstitutionCategory", "MyCategory",
@@ -30,6 +30,12 @@ class ExpenseAnalysis:
     }
 
     def __init__(self, df: pd.DataFrame) -> None:
+        if df.empty:
+            raise ValueError(
+                "The `df` should not be empty. Please load a valid DataFrame.")
+        column_name_checker(df, self._expense_columns)
+
+        self._whole_df = df.copy(deep=True)
         self._expense_df = df[df["IsTransfer"] == "expense"]
         self._transfer_df = df[df["IsTransfer"] == "transfer"]
         self._redundant_df = df[df["IsTransfer"] == "redundant"]
@@ -70,7 +76,6 @@ class ExpenseAnalysis:
             A dictionary with the column's unique values as keys
             and the aggregated data as values.
         """
-        column_name_checker(self._expense_df, self._new_expense_columns)
         self._timeline_error_check(freq)
 
         out_dict = {}
@@ -81,6 +86,29 @@ class ExpenseAnalysis:
             out_dict[col_value] = tmp_df.groupby(grouper).sum()
 
         return out_dict
+
+    def get_unique_categories(self):
+        return pd.DataFrame({
+            "MyCategory": self._whole_df["MyCategory"].unique()
+        })
+
+    def get_last_date_df(self):
+        last_date_cols = ["Institution", "AccountName", "Service", "LastDate"]
+        last_date_df = pd.DataFrame(columns=last_date_cols)
+
+        grouped_by_list = ["Institution", "AccountName", "Service"]
+        grouped = self._expense_df.groupby(by=grouped_by_list)
+        for name, grp in grouped:
+            last_date = grp["Date"].max().date()
+            tmp_df = pd.DataFrame({
+                "Institution": [name[0]],
+                "AccountName": [name[1]],
+                "Service": [name[2]],
+                "LastDate": [last_date],
+            })
+            last_date_df = pd.concat([last_date_df, tmp_df], ignore_index=True)
+
+        return last_date_df
 
     def category_spend(self, freq: str = "M") -> Dict[str, pd.Series]:
         """Create an aggregated data for expense categories.

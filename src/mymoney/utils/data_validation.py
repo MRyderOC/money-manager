@@ -477,7 +477,7 @@ class DataFrameValidation:
             if not (vals_error is True):
                 faulty_idxs.extend(vals_error["idxs"])
                 msg = (
-                    f"{col} has the wrong value."
+                    f"Column `{col}` has the wrong value."
                     f"\nShould be ({val_args['values']})"
                     f"\nErrors: {vals_error}\n"
                 )

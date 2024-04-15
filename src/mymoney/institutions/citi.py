@@ -44,15 +44,14 @@ class Citi(institution_base.Institution):
             def amount_finder(row):
                 try:
                     regex_flag = re.search(
-                        r"AUTOPAY|ONLINE PAYMENT, THANK YOU",
+                        r"AUTOPAY|ONLINE PAYMENT, THANK YOU|"
+                        r"Thankyou Points Redeemed",
                         str(row["_new_Description"])
                     )
                 except Exception:
                     return "consider"
 
-                if regex_flag:
-                    return row["Credit"]
-                elif np.isnan(row["Debit"]):
+                if regex_flag or np.isnan(row["Debit"]):
                     return -row["Credit"]
                 else:
                     return -row["Debit"]

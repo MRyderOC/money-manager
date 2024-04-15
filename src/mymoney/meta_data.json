@@ -25,9 +25,48 @@
                     "Service": {"values": ["debit", "credit", "3rdparty"], "mode": "equal"}
                 }
             }
+        },
+        "trade": {
+            "columns": [
+                "Datetime",
+                "FromAccount", "ToAccount",
+                "FromAsset", "ToAsset",
+                "InAmount", "OutAmount",
+                "FeeAsset", "FeeAmount", "FeeValue",
+                "TrxType", "TrxSubType",
+                "AssetType", "IsValid"
+            ],
+            "read_args": {
+                "header": 0,
+                "parse_dates": ["Datetime"],
+                "names": null
+            },
+            "validation_data": {
+                "schema": {
+                    "Datetime": "datetime64_ns",
+                    "InAmount": "float",
+                    "OutAmount": "float",
+                    "FeeAmount": "float",
+                    "FeeValue": "float",
+                    "IsValid": "bool"
+                },
+                "column_values": {
+                    "FromAsset": {"values": "^[A-Z]{1,5}$", "mode": "regex"},
+                    "ToAsset": {"values": "^[A-Z]{1,5}$", "mode": "regex"},
+                    "FeeAsset": {"values": "^[A-Z]{1,5}$", "mode": "regex"},
+                    "TrxType": {"values": ["HODL", "Reward", "Trade", "Transfer"], "mode": "equal"},
+                    "TrxSubType": {"values": [
+                        "Deposit", "Withdrawal", "Buy", "Sell", "Stocks", "Crypto",
+                        "Buy", "Sell", "Pairwise",
+                        "Interest", "Stake", "Dividened", "Redundant",
+                        "BonusStock", "Brave", "CoinbaseEarn", "CryptoDotComRewards"
+                    ], "mode": "equal"},
+                    "AssetType": {"values": ["Stocks", "Crypto"], "mode": "equal"},
+                    "IsValid": {"values": [true, false], "mode": "equal"}
+                }
+            }
         }
     },
-
 
     "amex": {
         "credit": {
@@ -176,7 +215,7 @@
                     "Amount": "float"
                 },
                 "column_values": {
-                    "Type": {"values": ["Sale", "Payment", "Adjustment"], "mode": "superset"},
+                    "Type": {"values": ["Sale", "Payment", "Adjustment", "Return"], "mode": "superset"},
                     "Amount": {"values": "^-?\\d+[.]\\d{1,2}$", "mode": "regex"}
                 }
             }
@@ -225,7 +264,7 @@
                 "Notes"
             ],
             "read_args": {
-                "header": 3,
+                "header": 2,
                 "parse_dates": ["Timestamp"],
                 "names": null
             },
@@ -240,7 +279,7 @@
                 },
                 "column_values": {
                     "Spot Price Currency" : {"values": ["USD"], "mode": "equal"},
-                    "Transaction Type": {"values": ["Send", "Buy", "Learning Reward", "Convert", "Receive", "Rewards Income", "Sell"], "mode": "superset"}
+                    "Transaction Type": {"values": ["Send", "Buy", "Learning Reward", "Convert", "Receive", "Inflation Reward", "Staking Income", "Withdrawal", "Sell"], "mode": "superset"}
                 }
             }
         }
@@ -363,6 +402,48 @@
                 "column_values": {
                     "Type": {"values": ["Sale", "Payment", "Adjustment"], "mode": "superset"},
                     "Amount": {"values": "^-?\\d+[.]\\d{1,2}", "mode": "regex"}
+                }
+            }
+        }
+    },
+    "uphold": {
+        "exchange": {
+            "columns": [
+                "Date",
+                "Destination",
+                "Destination Amount",
+                "Destination Currency",
+                "Fee Amount",
+                "Fee Currency",
+                "Id",
+                "Origin",
+                "Origin Amount",
+                "Origin Currency",
+                "Status",
+                "Type"
+            ],
+            "read_args": {
+                "header": 0,
+                "parse_dates": ["Date"],
+                "names": null
+            },
+            "validation_data": {
+                "schema": {
+                    "Date": "datetime64_ns",
+                    "Destination Amount": "float",
+                    "Fee Amount": "float",
+                    "Origin Amount": "float"
+                },
+                "column_values": {
+                    "Destination": {"values": ["uphold", "bank", "ethereum"], "mode": "superset"},
+                    "Destination Amount": {"values": "^\\d+(\\.\\d+)*$", "mode": "regex"},
+                    "Destination Currency": {"values": "^[A-Z]{1,5}$", "mode": "regex"},
+                    "Fee Currency": {"values": "^[A-Z]{1,5}$", "mode": "regex", "na_action": "ignore"},
+                    "Origin": {"values": ["uphold", "bank"], "mode": "superset"},
+                    "Origin Amount": {"values": "^\\d+(\\.\\d+)*$", "mode": "regex"},
+                    "Origin Currency": {"values": "^[A-Z]{1,5}$", "mode": "regex"},
+                    "Status": {"values": ["completed"], "mode": "equal"},
+                    "Type": {"values": ["in", "transfer", "out"], "mode": "superset"}
                 }
             }
         }
