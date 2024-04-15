@@ -30,6 +30,8 @@ logging.basicConfig(
 @dataclasses.dataclass
 class InstData:
     """Main class for storing and transforming Institution data."""
+    # TODO: `append_to_db` in self.store
+
     # input data
     source: str | Any
     data_type: Any
