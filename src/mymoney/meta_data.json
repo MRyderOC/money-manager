@@ -406,6 +406,35 @@
             }
         }
     },
+    "sofi": {
+        "debit": {
+            "columns": [
+                "Date",
+                "Description",
+                "Type",
+                "Amount",
+                "Current balance",
+                "Status"
+            ],
+            "read_args": {
+                "header": 0,
+                "parse_dates": ["Date"],
+                "names": null
+            },
+            "validation_data": {
+                "schema": {
+                    "Date": "datetime64_ns",
+                    "Amount": "float",
+                    "Current balance": "float"
+                },
+                "column_values": {
+                    "Amount": {"values": "^-?\\d+[.]\\d{1,2}$", "mode": "regex"},
+                    "Current balance": {"values": "^-?\\d+[.]\\d{1,2}$", "mode": "regex"},
+                    "Status": {"values": ["Posted"], "mode": "equal"}
+                }
+            }
+        }
+    },
     "uphold": {
         "exchange": {
             "columns": [
