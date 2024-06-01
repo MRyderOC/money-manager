@@ -124,8 +124,7 @@ class ExpenseAnalysis:
         last_date_df = pd.DataFrame(columns=last_date_cols)
 
         grouped_by_list = ["Institution", "AccountName", "Service"]
-        # Bug prone: should be self._whole_df. Now it excludes the transfers
-        grouped = self._expense_df.groupby(by=grouped_by_list)
+        grouped = self._whole_df.groupby(by=grouped_by_list)
         for name, grp in grouped:
             last_date = grp["Date"].max().date()
             tmp_df = pd.DataFrame({
