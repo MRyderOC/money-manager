@@ -138,6 +138,22 @@ class ExpenseAnalysis:
         return last_date_df.sort_values(
             by=sort_options_map[sort_by], ignore_index=True)
 
+    def get_accounts(self, multi_index: bool = False):
+        """Get AccountName for each Institution.
+
+        Args:
+            multi_index (bool):
+                Whether to retutn a pandas multi index or not.
+
+        Returns:
+            A DataFrame with the accounts for each institution.
+        """
+        if multi_index:
+            grouped_by = ["Institution", "AccountName", "Service"]
+            return self._expense_df[grouped_by].groupby(grouped_by).count()
+        else:
+            return self.get_last_date_df().drop(columns=["LastDate"])
+
     # Spend related methods
     def category_spend(self, freq: str = "M") -> Dict[str, pd.Series]:
         """Create an aggregated data for expense categories.
