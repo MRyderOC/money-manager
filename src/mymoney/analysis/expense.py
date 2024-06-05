@@ -138,8 +138,9 @@ class ExpenseAnalysis:
         return last_date_df.sort_values(
             by=sort_options_map[sort_by], ignore_index=True)
 
-    def get_accounts(self, multi_index: bool = False):
-        """Get AccountName for each Institution.
+    def get_accounts_df(self, multi_index: bool = False):
+        """Get a DataFrame with the AccountName for each Institution
+        along with their Service.
 
         Args:
             multi_index (bool):
