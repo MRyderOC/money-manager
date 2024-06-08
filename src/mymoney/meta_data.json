@@ -219,6 +219,36 @@
                     "Amount": {"values": "^-?\\d+[.]\\d{1,2}$", "mode": "regex"}
                 }
             }
+        },
+        "debit": {
+            "columns": [
+                "Details",
+                "Posting Date",
+                "Description",
+                "Amount",
+                "Type",
+                "Balance",
+                "Check or Slip #"
+            ],
+            "read_args": {
+                "header": 0,
+                "parse_dates": ["Posting Date"],
+                "names": null,
+                "index_col": false
+            },
+            "validation_data": {
+                "schema": {
+                    "Posting Date": "datetime64_ns",
+                    "Amount": "float",
+                    "Balance": "float"
+                },
+                "column_values": {
+                    "Details": {"values": ["CREDIT"], "mode": "superset"},
+                    "Amount": {"values": "^-?\\d+[.]\\d{1,2}$", "mode": "regex"},
+                    "Type": {"values": ["ACH_CREDIT", "MISC_CREDIT", "ACCT_XFER"], "mode": "superset"},
+                    "Balance": {"values": "^-?\\d+[.]\\d{1,2}$", "mode": "regex"}
+                }
+            }
         }
     },
     "citi": {
