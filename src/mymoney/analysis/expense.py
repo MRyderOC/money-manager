@@ -155,6 +155,29 @@ class ExpenseAnalysis:
         else:
             return self.get_last_date_df().drop(columns=["LastDate"])
 
+    def get_last_n_transactions(self, n: int = 5):
+        """Get the last n transactions for each account.
+
+        Args:
+            n (int):
+                The number of transactions to get.
+
+        Returns:
+            A DataFrame with the last n transactions for each account.
+        """
+        last_n_cols = [
+            "Institution", "AccountName", "Date", "Amount", "Description"]
+        last_n_df = pd.DataFrame(columns=last_n_cols)
+
+        grouped_by_list = ["Institution", "AccountName", "Service"]
+        grouped = self._whole_df.groupby(by=grouped_by_list)
+        for _, grp in grouped:
+            tmp_df = grp.sort_values(by="Date", ignore_index=True)
+            tmp_df = tmp_df[last_n_cols].tail(n)
+            last_n_df = pd.concat([last_n_df, tmp_df], ignore_index=True)
+
+        return last_n_df
+
     # Spend related methods
     def category_spend(self, freq: str = "M") -> Dict[str, pd.Series]:
         """Create an aggregated data for expense categories.
