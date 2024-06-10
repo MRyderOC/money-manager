@@ -91,12 +91,12 @@ class ExpenseAnalysis:
         return out_dict
 
     # DataFrame creator methods
-    def get_unique_categories(self):
+    def get_unique_categories(self) -> pd.DataFrame:
         return pd.DataFrame({
             "MyCategory": self._whole_df["MyCategory"].unique()
         })
 
-    def get_last_date_df(self, sort_by: str = "institution"):
+    def get_last_date_df(self, sort_by: str = "institution") -> pd.DataFrame:
         """Get the last transactions for each account.
 
         Args:
@@ -138,7 +138,7 @@ class ExpenseAnalysis:
         return last_date_df.sort_values(
             by=sort_options_map[sort_by], ignore_index=True)
 
-    def get_accounts_df(self, multi_index: bool = False):
+    def get_accounts_df(self, multi_index: bool = False) -> pd.DataFrame:
         """Get a DataFrame with the AccountName for each Institution
         along with their Service.
 
@@ -155,7 +155,7 @@ class ExpenseAnalysis:
         else:
             return self.get_last_date_df().drop(columns=["LastDate"])
 
-    def get_last_n_transactions(self, n: int = 5):
+    def get_last_n_transactions(self, n: int = 5) -> pd.DataFrame:
         """Get the last n transactions for each account.
 
         Args:
