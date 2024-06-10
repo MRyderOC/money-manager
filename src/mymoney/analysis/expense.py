@@ -91,7 +91,7 @@ class ExpenseAnalysis:
         return out_dict
 
     # DataFrame creator methods
-    def get_unique_categories(self) -> pd.DataFrame:
+    def get_unique_categories_df(self) -> pd.DataFrame:
         return pd.DataFrame({
             "MyCategory": self._whole_df["MyCategory"].unique()
         })
@@ -155,7 +155,7 @@ class ExpenseAnalysis:
         else:
             return self.get_last_date_df().drop(columns=["LastDate"])
 
-    def get_last_n_transactions(self, n: int = 5) -> pd.DataFrame:
+    def get_last_n_transactions_df(self, n: int = 5) -> pd.DataFrame:
         """Get the last n transactions for each account.
 
         Args:
