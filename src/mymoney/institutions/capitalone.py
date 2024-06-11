@@ -118,8 +118,16 @@ class CapitalOne(institution_base.Institution):
                 else:
                     return "expense"
 
+            def amount_finder(row):
+                trx_type = row["Transaction Type"]
+                amount = row["Transaction Amount"]
+                if trx_type == "Debit":
+                    return -abs(amount)
+                elif trx_type == "Credit":
+                    return abs(amount)
+
             input_df["_new_Description"] = input_df["Transaction Description"].map(lambda val: str(val).strip())  # noqa: E501
-            input_df["_new_Amount"] = input_df["Transaction Amount"].copy(deep=True)  # noqa: E501
+            input_df["_new_Amount"] = input_df.apply(amount_finder, axis=1)
             input_df["_new_Date"] = input_df["Transaction Date"].copy(deep=True)  # noqa: E501
             input_df["_new_InstitutionCategory"] = np.nan
             input_df["_new_MyCategory"] = np.nan
