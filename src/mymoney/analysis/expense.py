@@ -27,9 +27,6 @@ class ExpenseAnalysis:
         "Y": "Y", "y": "Y", "yearly": "Y",
         "M": "M", "m": "M", "monthly": "M",
         "W": "W", "w": "W", "weekly": "W",
-
-
-        "Q": "Q", "QS": "QS"
     }
 
     def __init__(self, df: pd.DataFrame) -> None:
@@ -229,24 +226,3 @@ class ExpenseAnalysis:
             and the aggregated data as values.
         """
         return self._column_sum_grouper(column="AccountName", freq=freq)
-
-    # Overall spend method
-    def overall_spend(self, by: str, sortby: str = "Amount") -> pd.DataFrame:
-        """docs here!"""
-        category_cols = ["MyCategory", "Amount"]
-        institution_cols = ["Institution", "Amount"]
-        account_cols = ["Institution", "AccountName", "Amount"]
-        grp_by = lambda x: x[:-1]  # noqa: E731
-
-        out_df = pd.DataFrame()
-        if by == "MyCategory":
-            out_df = self._expense_df[category_cols].groupby(
-                by=grp_by(category_cols)).sum().sort_values(sortby)
-        elif by == "Institution":
-            out_df = self._expense_df[institution_cols].groupby(
-                by=grp_by(institution_cols)).sum().sort_values(sortby)
-        elif by == "AccountName":
-            out_df = self._expense_df[account_cols].groupby(
-                by=grp_by(account_cols)).sum().sort_values(sortby)
-
-        return out_df
