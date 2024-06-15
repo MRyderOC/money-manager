@@ -87,17 +87,41 @@ class ExpenseAnalysis:
 
         return out_dict
 
-    def get_unique_categories(self):
+    # DataFrame creator methods
+    def get_unique_categories_df(self) -> pd.DataFrame:
         return pd.DataFrame({
             "MyCategory": self._whole_df["MyCategory"].unique()
         })
 
-    def get_last_date_df(self):
+    def get_last_date_df(self, sort_by: str = "institution") -> pd.DataFrame:
+        """Get the last transactions for each account.
+
+        Args:
+            sort_by (str):
+                The column to sort by.
+                Options:
+                    "date",
+                    "institution", "inst"
+                    "service",
+                    "accountname", "account", "acc"
+
+        Returns:
+            A DataFrame with the last transactions for each account.
+        """
+        sort_options_map = {
+            "date": "LastDate",
+            "service": "Service",
+            "institution": "Institution",
+            "inst": "Institution",
+            "accountname": "AccountName",
+            "account": "AccountName",
+            "acc": "AccountName",
+        }
         last_date_cols = ["Institution", "AccountName", "Service", "LastDate"]
         last_date_df = pd.DataFrame(columns=last_date_cols)
 
         grouped_by_list = ["Institution", "AccountName", "Service"]
-        grouped = self._expense_df.groupby(by=grouped_by_list)
+        grouped = self._whole_df.groupby(by=grouped_by_list)
         for name, grp in grouped:
             last_date = grp["Date"].max().date()
             tmp_df = pd.DataFrame({
@@ -108,8 +132,50 @@ class ExpenseAnalysis:
             })
             last_date_df = pd.concat([last_date_df, tmp_df], ignore_index=True)
 
-        return last_date_df
+        return last_date_df.sort_values(
+            by=sort_options_map[sort_by], ignore_index=True)
 
+    def get_accounts_df(self, multi_index: bool = False) -> pd.DataFrame:
+        """Get a DataFrame with the AccountName for each Institution
+        along with their Service.
+
+        Args:
+            multi_index (bool):
+                Whether to retutn a pandas multi index or not.
+
+        Returns:
+            A DataFrame with the accounts for each institution.
+        """
+        if multi_index:
+            grouped_by = ["Institution", "AccountName", "Service"]
+            return self._expense_df[grouped_by].groupby(grouped_by).count()
+        else:
+            return self.get_last_date_df().drop(columns=["LastDate"])
+
+    def get_last_n_transactions_df(self, n: int = 5) -> pd.DataFrame:
+        """Get the last n transactions for each account.
+
+        Args:
+            n (int):
+                The number of transactions to get.
+
+        Returns:
+            A DataFrame with the last n transactions for each account.
+        """
+        last_n_cols = [
+            "Institution", "AccountName", "Date", "Amount", "Description"]
+        last_n_df = pd.DataFrame(columns=last_n_cols)
+
+        grouped_by_list = ["Institution", "AccountName", "Service"]
+        grouped = self._whole_df.groupby(by=grouped_by_list)
+        for _, grp in grouped:
+            tmp_df = grp.sort_values(by="Date", ignore_index=True)
+            tmp_df = tmp_df[last_n_cols].tail(n)
+            last_n_df = pd.concat([last_n_df, tmp_df], ignore_index=True)
+
+        return last_n_df
+
+    # Spend related methods
     def category_spend(self, freq: str = "M") -> Dict[str, pd.Series]:
         """Create an aggregated data for expense categories.
 
@@ -143,3 +209,20 @@ class ExpenseAnalysis:
             and the aggregated data as values.
         """
         return self._column_sum_grouper(column="Institution", freq=freq)
+
+    def account_spend(self, freq: str = "M") -> Dict[str, pd.Series]:
+        """Create an aggregated data for account.
+
+        Args:
+            freq (str):
+                The freq that the aggregation will be perform on.
+                Options:
+                    "Y", "y", "yearly"
+                    "M", "m", "monthly"
+                    "W", "w", "weekly"
+
+        Returns:
+            A dictionary with the account names as keys
+            and the aggregated data as values.
+        """
+        return self._column_sum_grouper(column="AccountName", freq=freq)

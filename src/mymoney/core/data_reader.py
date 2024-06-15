@@ -105,7 +105,9 @@ class DataReader:
             input_df["Description"].str.contains(r"PAYMENT\s?-? THANK"))
         wf_service = "credit" if wf_service_cond else "debit"
 
-        logging.info(f"Completed: wellsfargo/{wf_service} - {account_name}")
+        inst = "wellsfargo"
+        logging.info(
+            f"Completed: {inst:<12} - {wf_service:<10} - {account_name:<20}")
         return InstData(
             source=path,
             data_type=DataType.CSV,
@@ -167,7 +169,10 @@ class DataReader:
                         logging.warning(msg)
                     continue
 
-                logging.info(f"Completed: {name} - {account_name}")
+                # logging.info(f"Completed: {name} - {account_name}")
+                logging.info(
+                    f"Completed: {institution:<12} - {service:<10}"
+                    f" - {account_name:<20}")
                 return InstData(
                     source=path,
                     data_type=DataType.CSV,
