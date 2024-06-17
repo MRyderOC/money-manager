@@ -102,6 +102,7 @@ class CapitalOne(institution_base.Institution):
                 try:
                     regex_flag = re.search(
                         r"VENMO|DISCOVER|AMEX|PAYPAL|SAMS CLUB PAYMENT|"
+                        r"Wealthfront EDI PYMNTS|JPMorgan Chase Ext Trnsfr|"
                         r"CHASE CREDIT CRD AUTOPAY|CHASE CREDIT CRD EPAY|"
                         r"WELLS FARGO|WF Credit Card AUTO PAY|"
                         r"CITI CARD|CITI AUTOPAY PAYMENT|Cash App|"
