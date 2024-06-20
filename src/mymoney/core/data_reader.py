@@ -117,7 +117,7 @@ class DataReader:
             table=input_df,
         )
 
-    def read_csv(
+    def read_csv_file(
         self, path: str, account_name: str = None, logs: bool = False
     ) -> InstData:
         """Read the data from `path` and returns a InstData.
@@ -185,7 +185,7 @@ class DataReader:
         # Log a warning if data can not be read
         logging.warning(f"Couldn't read the data for {path}")
 
-    def t_read_csv(self, folder_path: str) -> List[InstData]:
+    def read_csv_folder(self, folder_path: str) -> List[InstData]:
         """Traverse `folder_path` and returns a list that contains
         InstData for each csv file in the `folder_path`. This method should be
         used to traverse at most one level deep. If there is a folder
@@ -212,7 +212,7 @@ class DataReader:
                     continue
 
                 tmp_path = os.path.join(dirpath, filename)
-                if read_data := self.read_csv(tmp_path, account_name):
+                if read_data := self.read_csv_file(tmp_path, account_name):
                     out_list.append(read_data)
 
         return out_list
