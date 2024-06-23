@@ -59,8 +59,9 @@ class ExpenseAnalysis:
     def _column_sum_grouper(
         self, column: str, freq: str = "M"
     ) -> Dict[str, pd.Series]:
-        """Create an aggregated data which returns a dictionary with
-        column's unique values as keys and the aggregated data as values.
+        """Create a DataFrame that the columns are the unique values present
+        in the `column` and the rows are the aggregated data based on the
+        `freq`.
 
         Args:
             column (str):
@@ -73,8 +74,7 @@ class ExpenseAnalysis:
                     "W", "w", "weekly"
 
         Returns:
-            A dictionary with the column's unique values as keys
-            and the aggregated data as values.
+            A pandas DataFrame with the aggregated data.
         """
         self._timeline_error_check(freq)
 
@@ -85,7 +85,11 @@ class ExpenseAnalysis:
             grouper = pd.Grouper(freq=self._timeline_map[freq], key="Date")
             out_dict[col_value] = tmp_df.groupby(grouper).sum()
 
-        return out_dict
+        df = pd.DataFrame({
+            cat: ser["Amount"]
+            for cat, ser in out_dict.items()
+        })
+        return df.fillna(.0)
 
     # DataFrame creator methods
     def get_unique_categories_df(self) -> pd.DataFrame:
@@ -188,8 +192,7 @@ class ExpenseAnalysis:
                     "W", "w", "weekly"
 
         Returns:
-            A dictionary with the categories as keys
-            and the aggregated data as values.
+            A pandas DataFrame with the aggregated data.
         """
         return self._column_sum_grouper(column="MyCategory", freq=freq)
 
@@ -205,8 +208,7 @@ class ExpenseAnalysis:
                     "W", "w", "weekly"
 
         Returns:
-            A dictionary with the institutions as keys
-            and the aggregated data as values.
+            A pandas DataFrame with the aggregated data.
         """
         return self._column_sum_grouper(column="Institution", freq=freq)
 
@@ -222,7 +224,6 @@ class ExpenseAnalysis:
                     "W", "w", "weekly"
 
         Returns:
-            A dictionary with the account names as keys
-            and the aggregated data as values.
+            A pandas DataFrame with the aggregated data.
         """
         return self._column_sum_grouper(column="AccountName", freq=freq)
