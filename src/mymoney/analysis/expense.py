@@ -227,3 +227,56 @@ class ExpenseAnalysis:
             A pandas DataFrame with the aggregated data.
         """
         return self._column_sum_grouper(column="AccountName", freq=freq)
+
+    # Overall spend methods
+    def _overall_spend_helper(
+        self, columns: List[str], sort_by: str | List[str] = "Amount"
+    ) -> pd.DataFrame:
+        """Create a DataFrame based on the `columns` passed and
+        calculate the sum spend over all the values.
+
+        Args:
+            columns (List[str]):
+                The columns to group by.
+            sort_by (str | List[str]):
+                The column(s) to sort by.
+
+        Returns:
+            A pandas DataFrame with the aggregated data.
+        """
+        if "Amount" not in columns:
+            raise ValueError("Amount must be in the columns list.")
+
+        group_by_cols = copy.deepcopy(columns)
+        group_by_cols.remove("Amount")
+
+        df = self._expense_df[columns].groupby(by=group_by_cols).sum()
+        return df.sort_values(sort_by, ascending=False)
+
+    def category_overall_spend(self) -> pd.DataFrame:
+        """Overall spend overview for each category.
+
+        Returns:
+            A pandas DataFrame with the overall spend for each category.
+        """
+        return self._overall_spend_helper(
+            columns=["MyCategory", "Amount"])
+
+    def institution_overall_spend(self) -> pd.DataFrame:
+        """Overall spend overview for each institution.
+
+        Returns:
+            A pandas DataFrame with the overall spend for each institution.
+        """
+        return self._overall_spend_helper(
+            columns=["Institution", "Amount"])
+
+    def account_overall_spend(self) -> pd.DataFrame:
+        """Overall spend overview for each account.
+
+        Returns:
+            A pandas DataFrame with the overall spend for each account.
+        """
+        return self._overall_spend_helper(
+            columns=["Institution", "AccountName", "Amount"],
+            sort_by=["Institution", "Amount"])
