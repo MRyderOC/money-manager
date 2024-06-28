@@ -1,5 +1,6 @@
 import logging
-from typing import Dict
+import copy
+from typing import List
 
 import numpy as np  # noqa: F401
 import pandas as pd
@@ -280,3 +281,27 @@ class ExpenseAnalysis:
         return self._overall_spend_helper(
             columns=["Institution", "AccountName", "Amount"],
             sort_by=["Institution", "Amount"])
+
+    # Cash Flow related methods
+    def cash_flow(
+        self, freq: str = "M", excluded_categories: List[str] = None
+    ) -> pd.DataFrame:
+        categories = self._expense_df["MyCategory"].unique()
+        money_in_categories = {"Income", "Interest"}
+        money_out_categories = set(categories) - money_in_categories
+        if excluded_categories is not None:
+            money_out_categories -= set(excluded_categories)
+
+        money_in_df = self._expense_df[
+            self._expense_df["MyCategory"].isin(money_in_categories)
+        ][["Amount", "Date"]]
+        money_out_df = self._expense_df[
+            self._expense_df["MyCategory"].isin(money_out_categories)
+        ][["Amount", "Date"]]
+
+        grouper = pd.Grouper(freq=self._timeline_map[freq], key="Date")
+        money_in_grouped = money_in_df.groupby(grouper).sum()
+        money_out_grouped = money_out_df.groupby(grouper).sum()
+
+        return money_in_grouped.join(
+            money_out_grouped, lsuffix='In', rsuffix='Out')
