@@ -57,41 +57,6 @@ class ExpenseAnalysis:
                 f"\n{list(self._timeline_map.keys())}"
             )
 
-    def _column_sum_grouper(
-        self, column: str, freq: str = "M"
-    ) -> Dict[str, pd.Series]:
-        """Create a DataFrame that the columns are the unique values present
-        in the `column` and the rows are the aggregated data based on the
-        `freq`.
-
-        Args:
-            column (str):
-                The name of the column to the aggregation on.
-            freq (str):
-                The freq that the aggregation will be perform on.
-                Options:
-                    "Y", "y", "yearly"
-                    "M", "m", "monthly"
-                    "W", "w", "weekly"
-
-        Returns:
-            A pandas DataFrame with the aggregated data.
-        """
-        self._timeline_error_check(freq)
-
-        out_dict = {}
-        for col_value in self._expense_df[column].unique():
-            tmp_df = self._expense_df[self._expense_df[column] == col_value]
-            tmp_df = tmp_df[["Amount", "Date"]]
-            grouper = pd.Grouper(freq=self._timeline_map[freq], key="Date")
-            out_dict[col_value] = tmp_df.groupby(grouper).sum()
-
-        df = pd.DataFrame({
-            cat: ser["Amount"]
-            for cat, ser in out_dict.items()
-        })
-        return df.fillna(.0)
-
     # DataFrame creator methods
     def get_unique_categories_df(self) -> pd.DataFrame:
         return pd.DataFrame({
@@ -181,7 +146,42 @@ class ExpenseAnalysis:
         return last_n_df
 
     # Spend related methods
-    def category_spend(self, freq: str = "M") -> Dict[str, pd.Series]:
+    def _column_sum_grouper(
+        self, column: str, freq: str = "M"
+    ) -> pd.DataFrame:
+        """Create a DataFrame that the columns are the unique values present
+        in the `column` and the rows are the aggregated data based on the
+        `freq`.
+
+        Args:
+            column (str):
+                The name of the column to the aggregation on.
+            freq (str):
+                The freq that the aggregation will be perform on.
+                Options:
+                    "Y", "y", "yearly"
+                    "M", "m", "monthly"
+                    "W", "w", "weekly"
+
+        Returns:
+            A pandas DataFrame with the aggregated data.
+        """
+        self._timeline_error_check(freq)
+
+        out_dict = {}
+        for col_value in self._expense_df[column].unique():
+            tmp_df = self._expense_df[self._expense_df[column] == col_value]
+            tmp_df = tmp_df[["Amount", "Date"]]
+            grouper = pd.Grouper(freq=self._timeline_map[freq], key="Date")
+            out_dict[col_value] = tmp_df.groupby(grouper).sum()
+
+        df = pd.DataFrame({
+            cat: ser["Amount"]
+            for cat, ser in out_dict.items()
+        })
+        return df.fillna(.0)
+
+    def category_spend(self, freq: str = "M") -> pd.DataFrame:
         """Create an aggregated data for expense categories.
 
         Args:
@@ -197,7 +197,7 @@ class ExpenseAnalysis:
         """
         return self._column_sum_grouper(column="MyCategory", freq=freq)
 
-    def institution_spend(self, freq: str = "M") -> Dict[str, pd.Series]:
+    def institution_spend(self, freq: str = "M") -> pd.DataFrame:
         """Create an aggregated data for institutions.
 
         Args:
@@ -213,7 +213,7 @@ class ExpenseAnalysis:
         """
         return self._column_sum_grouper(column="Institution", freq=freq)
 
-    def account_spend(self, freq: str = "M") -> Dict[str, pd.Series]:
+    def account_spend(self, freq: str = "M") -> pd.DataFrame:
         """Create an aggregated data for account.
 
         Args:
