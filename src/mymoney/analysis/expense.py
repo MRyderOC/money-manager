@@ -284,10 +284,36 @@ class ExpenseAnalysis:
 
     # Cash Flow related methods
     def cash_flow(
-        self, freq: str = "M", excluded_categories: List[str] = None
+        self, freq: str = "M",
+        income_categories: List[str] = None,
+        excluded_categories: List[str] = None
     ) -> pd.DataFrame:
+        """Calculate the cash flow for specific `freq`.
+
+        Args:
+            freq (str):
+                The freq that the calculation will be perform on.
+                Options:
+                    "Y", "y", "yearly"
+                    "M", "m", "monthly"
+                    "W", "w", "weekly"
+            income_categories (List[str]):
+                The list of categories that are considered as income.
+                If `None`, then the default income categories are used which
+                are "Income" and "Interest".
+            excluded_categories (List[str]):
+                The list of categories that are excluded from the calculation.
+
+        Returns:
+            A pandas DataFrame with the cash flow for each `freq`.
+        """
         categories = self._expense_df["MyCategory"].unique()
-        money_in_categories = {"Income", "Interest"}
+
+        if income_categories is None:
+            money_in_categories = {"Income", "Interest"}
+        else:
+            money_in_categories = set(income_categories)
+
         money_out_categories = set(categories) - money_in_categories
         if excluded_categories is not None:
             money_out_categories -= set(excluded_categories)
