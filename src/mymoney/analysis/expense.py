@@ -28,6 +28,7 @@ class ExpenseAnalysis:
         "Y": "Y", "y": "Y", "yearly": "Y",
         "M": "M", "m": "M", "monthly": "M",
         "W": "W", "w": "W", "weekly": "W",
+        "Q": "Q", "q": "Q", "quarterly": "Q",
     }
 
     def __init__(self, df: pd.DataFrame) -> None:
@@ -160,6 +161,7 @@ class ExpenseAnalysis:
                 The freq that the aggregation will be perform on.
                 Options:
                     "Y", "y", "yearly"
+                    "Q", "q", "quarterly"
                     "M", "m", "monthly"
                     "W", "w", "weekly"
 
@@ -189,6 +191,7 @@ class ExpenseAnalysis:
                 The freq that the aggregation will be perform on.
                 Options:
                     "Y", "y", "yearly"
+                    "Q", "q", "quarterly"
                     "M", "m", "monthly"
                     "W", "w", "weekly"
 
@@ -205,6 +208,7 @@ class ExpenseAnalysis:
                 The freq that the aggregation will be perform on.
                 Options:
                     "Y", "y", "yearly"
+                    "Q", "q", "quarterly"
                     "M", "m", "monthly"
                     "W", "w", "weekly"
 
@@ -221,6 +225,7 @@ class ExpenseAnalysis:
                 The freq that the aggregation will be perform on.
                 Options:
                     "Y", "y", "yearly"
+                    "Q", "q", "quarterly"
                     "M", "m", "monthly"
                     "W", "w", "weekly"
 
@@ -295,6 +300,7 @@ class ExpenseAnalysis:
                 The freq that the calculation will be perform on.
                 Options:
                     "Y", "y", "yearly"
+                    "Q", "q", "quarterly"
                     "M", "m", "monthly"
                     "W", "w", "weekly"
             income_categories (List[str]):
@@ -307,6 +313,8 @@ class ExpenseAnalysis:
         Returns:
             A pandas DataFrame with the cash flow for each `freq`.
         """
+        self._timeline_error_check(freq)
+
         categories = self._expense_df["MyCategory"].unique()
 
         if income_categories is None:
