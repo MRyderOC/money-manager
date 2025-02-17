@@ -243,9 +243,9 @@
                     "Balance": "float"
                 },
                 "column_values": {
-                    "Details": {"values": ["CREDIT"], "mode": "superset"},
+                    "Details": {"values": ["CREDIT", "DEBIT"], "mode": "superset"},
                     "Amount": {"values": "^-?\\d+[.]\\d{1,2}$", "mode": "regex"},
-                    "Type": {"values": ["ACH_CREDIT", "MISC_CREDIT", "ACCT_XFER"], "mode": "superset"},
+                    "Type": {"values": ["ACH_CREDIT", "MISC_CREDIT", "ACCT_XFER", "MISC_DEBIT"], "mode": "superset"},
                     "Balance": {"values": "^-?\\d+[.]\\d{1,2}$", "mode": "regex"}
                 }
             }
