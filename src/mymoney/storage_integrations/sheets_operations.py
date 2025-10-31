@@ -207,3 +207,16 @@ class SheetsOperations:
 
         set_with_dataframe(tmp_wsheet, df)
         logging.info("Done!")
+
+    def dump_sheets_to_df(self, wsheet_name: str) -> pd.DataFrame:
+        """Dump the worksheet named `wsheet_name` to a pandas DataFrame.
+
+        Args:
+            wsheet_name (str):
+                The name of the worksheet to dump.
+
+        Returns:
+            pd.DataFrame: The DataFrame containing the worksheet data.
+        """
+        tmp_wsheet = self._the_sheet.worksheet(wsheet_name)
+        return pd.DataFrame(tmp_wsheet.get_all_records())
