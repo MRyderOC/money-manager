@@ -147,6 +147,7 @@ class ExpenseAnalysis:
         return last_n_df
 
     # Spend related methods
+    # In General returns a sum over the Amount for specific `freq`
     def _column_sum_grouper(
         self, column: str, freq: str = "M"
     ) -> pd.DataFrame:
@@ -235,6 +236,7 @@ class ExpenseAnalysis:
         return self._column_sum_grouper(column="AccountName", freq=freq)
 
     # Overall spend methods
+    # In General returns a sum over the Amount for each group
     def _overall_spend_helper(
         self, columns: List[str], sort_by: str | List[str] = "Amount"
     ) -> pd.DataFrame:
