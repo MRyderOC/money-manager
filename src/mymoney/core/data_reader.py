@@ -21,7 +21,7 @@ logging.basicConfig(
 
 
 class DataReader:
-    """Main class for reading data."""
+    """Main class for reading the data."""
 
     def __init__(self, warn: bool = False) -> None:
         """Constructor of DataReader class.
@@ -29,11 +29,14 @@ class DataReader:
             warn (bool):
                 To show the warnings or not. Default is False.
         """
+        if warn is False:
+            warnings.filterwarnings("ignore")
+
+        # Read the meta_data.json
         self._meta_data = json.loads(
             files("mymoney").joinpath("meta_data.json").read_text()
         )
-        if warn is False:
-            warnings.filterwarnings("ignore")
+
 
     def _path_is_csv_like(self, path: str) -> bool:
         """Check whether the `path` is a path to csv file.
@@ -53,7 +56,7 @@ class DataReader:
     def _read_wellsfargo_csv(
         self, path: str, account_name: str, read_args: Dict[str, Any]
     ) -> InstData:
-        """Read the CSV data from `path` and returns a InstData. This method
+        """Read the CSV data from `path` and returns a `InstData`. This method
         is specialized for WellsFargo CSV files since they need special care.
 
         Args:
@@ -66,7 +69,7 @@ class DataReader:
                 Read arguments for pd.read_csv.
 
         Returns:
-            An InstData object.
+            An `InstData` object.
         """
         def is_wellsfargo(input_df: pd.DataFrame) -> bool:
             """Check whether the `input_df` is a WellsFargo DataFrame.
